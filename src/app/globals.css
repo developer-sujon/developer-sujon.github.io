@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --bg-primary: #ffffff;
   --bg-secondary: #f4f4f5;
@@ -16,8 +18,8 @@
 }
 
 html.dark {
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0c;
+  --bg-primary: #09090b;
+  --bg-secondary: #121215;
   --bg-muted: #18181b;
   --text-primary: #fafafa;
   --text-secondary: #a1a1aa;

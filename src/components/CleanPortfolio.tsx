@@ -36,7 +36,7 @@ interface CleanPortfolioProps {
 }
 
 export function CleanPortfolio({ projects }: CleanPortfolioProps) {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<SectionTab>("overview");
   const [companyFilter, setCompanyFilter] = useState<CompanyFilter>("all");
@@ -50,8 +50,26 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   const { profile, experiences, metrics, skillCategories, education } = resumeData;
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("dark");
+    // Sync with system theme initialized by layout head script
+    const isCurrentlyDark = document.documentElement.classList.contains("dark");
+    setIsDark(isCurrentlyDark);
+
+    // Listen to system changes if user hasn't explicitly set a preference
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      const saved = localStorage.getItem("theme");
+      if (!saved) {
+        setIsDark(e.matches);
+        if (e.matches) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleSystemChange);
+    return () => mediaQuery.removeEventListener("change", handleSystemChange);
   }, []);
 
   useEffect(() => {
@@ -74,13 +92,15 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   }, [selectedSlug]);
 
   const toggleTheme = () => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.remove("dark");
-      setIsDark(false);
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    try {
+      localStorage.setItem("theme", nextDark ? "dark" : "light");
+    } catch (e) {}
+    if (nextDark) {
+      document.documentElement.classList.add("dark");
     } else {
-      root.classList.add("dark");
-      setIsDark(true);
+      document.documentElement.classList.remove("dark");
     }
   };
 
@@ -153,7 +173,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                 </div>
                 {/* Active online dot */}
                 <span
-                  className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-black pointer-events-none"
+                  className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#09090b] pointer-events-none"
                   title="Active now"
                 />
               </div>
