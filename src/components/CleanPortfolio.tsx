@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export type SectionTab = "overview" | "systems" | "experience" | "contact";
-export type CompanyFilter = "all" | "Yupsis" | "Sitgram" | "ShunnoIT";
+export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT";
 
 interface CleanPortfolioProps {
   projects: {
@@ -75,7 +75,11 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
   const filteredProjects = companyFilter === "all"
     ? projects
-    : projects.filter((p) => p.metadata.company?.toLowerCase() === companyFilter.toLowerCase());
+    : projects.filter((p) => {
+        const pComp = (p.metadata.company || "").toLowerCase().replace(/[\s-_]+/g, "");
+        const filterComp = companyFilter.toLowerCase().replace(/[\s-_]+/g, "");
+        return pComp === filterComp;
+      });
 
   const selectedProject = selectedSlug
     ? projects.find((p) => p.metadata.slug === selectedSlug)
@@ -144,9 +148,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
           {/* Bio text */}
           <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
-            I architect high-throughput distributed systems and data engines. Currently leading systems architecture at{" "}
-            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> building sub-second AI omnichannel platforms and IoT queue workers, and previously at{" "}
-            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span> engineering million-row spreadsheet virtualization.
+            Lead Software Engineer architecting high-throughput distributed systems and cloud platforms. Currently leading engineering at{" "}
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, with core engineering experience across{" "}
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> and{" "}
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Shunno IT</span> building sub-second AI pipelines, IoT command queues, and high-scale SaaS products.
           </p>
 
           {/* Clean Contact Links */}
@@ -241,13 +246,13 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   Selected Systems &amp; Case Studies
                 </h2>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  Production platforms across Yupsis, Sitgram, and ShunnoIT. Click to inspect.
+                  Production platforms across Sitgram, Yupsis, and Shunno IT. Click to inspect.
                 </p>
               </div>
 
               {/* Company Filter Links */}
               <div className="flex items-center gap-3 text-xs">
-                {(["all", "Yupsis", "Sitgram", "ShunnoIT"] as CompanyFilter[]).map((c) => (
+                {(["all", "Sitgram", "Yupsis", "Shunno IT"] as CompanyFilter[]).map((c) => (
                   <button
                     key={c}
                     onClick={() => setCompanyFilter(c)}
@@ -371,11 +376,12 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                       <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">Shipped:</span>
                       <div className="flex flex-wrap gap-1.5">
                         {exp.projectsMentioned.map((projName) => {
-                          const matchingProject = projects.find(
-                            (p) =>
-                              p.metadata.title.toLowerCase().includes(projName.toLowerCase()) ||
-                              p.metadata.slug.toLowerCase().includes(projName.toLowerCase().replace(/\s+/g, "-"))
-                          );
+                          const cleanName = projName.toLowerCase().replace(/[\s-_]+/g, "");
+                          const matchingProject = projects.find((p) => {
+                            const pTitle = p.metadata.title.toLowerCase().replace(/[\s-_]+/g, "");
+                            const pSlug = p.metadata.slug.toLowerCase().replace(/[\s-_]+/g, "");
+                            return pTitle.includes(cleanName) || pSlug === cleanName || pSlug.includes(cleanName);
+                          });
                           return matchingProject ? (
                             <button
                               key={projName}

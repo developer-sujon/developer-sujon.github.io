@@ -2,10 +2,10 @@
 title: "NetFee — Enterprise ISP Billing SaaS & Mikrotik Bandwidth Engine"
 slug: "netfee"
 tagline: "Automated internet service provider billing platform with real-time Mikrotik router provisioning and payment gateway integration"
-company: "ShunnoIT"
-kicker: "ISP SaaS & Network Automation · ShunnoIT"
-role: "Full-Stack Software Engineer"
-period: "Nov 2022 – 2023"
+company: "Shunno IT"
+kicker: "ISP SaaS & Network Automation · Shunno IT"
+role: "Junior Software Engineer"
+period: "Dec 2022 – Jun 2025"
 status: "Production"
 featured: false
 badge: "ISP SaaS"
@@ -24,11 +24,12 @@ tags:
   - "Mikrotik RouterOS API"
   - "Redis"
   - "SMS Gateway"
+liveUrl: "https://netfeebd.com"
 ---
 
 ## 📌 Executive Summary
 
-**NetFee** is a multi-tenant ISP billing and client relationship management SaaS platform built at **ShunnoIT**. It automates daily operations for broadband internet providers—including customer subscription lifecycles, automated online renewals via mobile wallets (bKash, Nagad), and real-time bandwidth bandwidth queue configuration via the Mikrotik RouterOS API.
+**NetFee** is a multi-tenant ISP billing and client relationship management SaaS platform built at **Shunno IT**. It automates daily operations for broadband internet providers—including customer subscription lifecycles, automated online renewals via mobile wallets (bKash, Nagad), and real-time bandwidth queue configuration via the Mikrotik RouterOS API.
 
 ---
 
