@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
 import { GithubIcon, LinkedinIcon } from "./icons";
 import { 
@@ -11,14 +12,13 @@ import {
   Copy, 
   Check, 
   ExternalLink, 
-  Sliders, 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Globe, 
+  Download, 
+  Briefcase, 
   Layers, 
-  Database, 
-  ShieldCheck, 
-  Cpu, 
-  Clock, 
-  Radio, 
-  Server, 
   Send 
 } from "lucide-react";
 
@@ -38,7 +38,8 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
   const [articleFontSize, setArticleFontSize] = useState<number>(16);
   const [activeArchiveCategory, setActiveArchiveCategory] = useState<string>("All");
   const [tickerIndex, setTickerIndex] = useState<number>(0);
-  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isEmailCopied, setIsEmailCopied] = useState<boolean>(false);
+  const [isPhoneCopied, setIsPhoneCopied] = useState<boolean>(false);
   const [deviceMode, setDeviceMode] = useState<"desktop" | "mobile">("desktop");
 
   // Form states
@@ -70,8 +71,14 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
 
   const copyEmail = () => {
     navigator.clipboard.writeText(profile.email);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+    setIsEmailCopied(true);
+    setTimeout(() => setIsEmailCopied(false), 2000);
+  };
+
+  const copyPhone = () => {
+    navigator.clipboard.writeText(profile.phone);
+    setIsPhoneCopied(true);
+    setTimeout(() => setIsPhoneCopied(false), 2000);
   };
 
   const openArticle = (slug: string) => {
@@ -151,17 +158,27 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Download Authentic CV PDF */}
+          {/* Download Official CV PDF */}
           <a
             href="/Muhammad-Sujon-CV.pdf"
             download="Muhammad-Sujon-CV.pdf"
             className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-1)] transition-colors cursor-pointer text-xs"
             title="Download Official CV PDF"
           >
-            <Printer className="w-3.5 h-3.5 text-sky-400" />
+            <Download className="w-3.5 h-3.5 text-sky-400" />
             <span className="hidden sm:inline">Download CV (PDF)</span>
             <span className="sm:hidden">CV</span>
           </a>
+
+          {/* Print PDF Button */}
+          <button
+            onClick={() => window.print()}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-1)] transition-colors cursor-pointer"
+            title="Print or Save Editorial Journal as PDF"
+          >
+            <Printer className="w-3.5 h-3.5 text-sky-400" />
+            <span>Print</span>
+          </button>
 
           {/* Theme Toggle Button */}
           <button
@@ -201,13 +218,17 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
           </div>
         </header>
 
-        {/* Masthead Metadata Line */}
-        <div className="flex flex-wrap items-center justify-between gap-3 py-2.5 border-b border-[var(--border)] text-xs text-[var(--text-secondary)]">
-          <div className="font-editorial italic">
-            Tuesday, October 27, 2026 · Dhaka, Bangladesh
+        {/* Masthead Metadata Line with Real Address & Live Ticker */}
+        <div className="flex flex-wrap items-center justify-between gap-3 py-2.5 border-b border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono">
+          <div className="flex items-center gap-3">
+            <span className="font-editorial italic font-sans">{profile.location}</span>
+            <span>•</span>
+            <a href={`tel:${profile.phone}`} className="hover:text-[var(--text-primary)] transition-colors">
+              {profile.phone}
+            </a>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-[11px]">
+          <div className="flex items-center gap-2 text-[11px]">
             <span className="live-dot" />
             <span className="text-[var(--text-primary)] font-medium transition-opacity duration-300">
               {profile.statusTicker[tickerIndex]}
@@ -379,7 +400,7 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
               {/* Lead Story Column (Zotlyx) */}
               <div className="md:col-span-7 lg:col-span-8 md:pr-6 md:border-r border-[var(--border)] space-y-4">
                 <div className="text-xs font-mono font-medium text-[var(--text-accent)]">
-                  {leadProject.metadata.kicker || "Cloudflare Edge & AI Architecture · Lead story"}
+                  {leadProject.metadata.kicker || "Cloudflare Edge & AI Architecture · Lead story · Yupsis"}
                 </div>
 
                 <h2
@@ -499,19 +520,32 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
               </div>
             </div>
 
-            {/* Author Biographical Colophon & Skills Index */}
+            {/* Author Biographical Colophon & Skills Index with Official Avatar */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
               <div className="space-y-3">
                 <div className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)]">
                   About the Systems Architect
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[var(--bg-accent)] text-[var(--text-accent)] font-editorial font-bold text-lg flex items-center justify-center shrink-0 border border-[var(--border-accent)]">
-                    MS
+                  {/* Authentic Avatar Photo */}
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-[var(--border)] shadow-md">
+                    <img
+                      src={profile.avatarUrl}
+                      alt={profile.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <p className="font-editorial text-sm text-[var(--text-secondary)] leading-relaxed">
-                    <strong>{profile.name}</strong> is a systems architect and senior full-stack engineer who builds distributed edge platforms, high-throughput message streaming systems, and million-row data interfaces across <strong>Yupsis</strong> and <strong>Sitgram</strong>.
-                  </p>
+                  <div className="space-y-1">
+                    <div className="font-bold text-sm text-[var(--text-primary)]">
+                      {profile.name}
+                    </div>
+                    <div className="text-xs font-mono text-[var(--text-accent)]">
+                      {profile.location} · {profile.phone}
+                    </div>
+                    <p className="font-editorial text-xs text-[var(--text-secondary)] leading-relaxed">
+                      Lead systems architect and distributed engineer building high-concurrency cloudflare edge systems, million-row spreadsheet virtualization, and IoT command queues across <strong>Yupsis</strong> and <strong>Sitgram</strong>.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -528,9 +562,9 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
                     "Next.js 15",
                     "Supabase PostgreSQL",
                     "Drizzle ORM",
+                    "Nest.js & Redis",
+                    "RabbitMQ",
                     "Turborepo",
-                    "Web Workers",
-                    "oRPC",
                   ].map((tech) => (
                     <span
                       key={tech}
@@ -625,7 +659,7 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
                 Career & Chronology
               </h2>
               <p className="font-editorial italic text-sm sm:text-base text-[var(--text-secondary)] mt-1">
-                Where the engineering stories and architectures originated.
+                Chronological record of companies, systems built, and engineering milestones.
               </p>
             </div>
 
@@ -660,7 +694,7 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
                   {/* Related Projects */}
                   {exp.projectsMentioned.length > 0 && (
                     <div className="pt-2 flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-mono text-[var(--text-muted)]">Chronicles Shipped:</span>
+                      <span className="text-xs font-mono text-[var(--text-muted)]">Official Projects Shipped:</span>
                       {exp.projectsMentioned.map((proj) => (
                         <span
                           key={proj}
@@ -676,19 +710,23 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
             </div>
 
             {/* Academic Background */}
-            <div className="p-6 rounded-2xl border border-[var(--border)] space-y-2">
+            <div className="p-6 rounded-2xl border border-[var(--border)] space-y-3">
               <div className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)]">
                 Academic Background
               </div>
-              <h3 className="font-editorial text-xl font-semibold text-[var(--text-primary)]">
-                {education[0].degree}
-              </h3>
-              <div className="text-xs font-mono text-[var(--text-accent)]">
-                {education[0].institution} · {education[0].period}
-              </div>
-              <p className="font-editorial text-sm text-[var(--text-secondary)]">
-                {education[0].details}
-              </p>
+              {education.map((edu, i) => (
+                <div key={i} className="pb-3 last:pb-0 border-b last:border-b-0 border-[var(--border)]">
+                  <h3 className="font-editorial text-lg font-semibold text-[var(--text-primary)]">
+                    {edu.degree}
+                  </h3>
+                  <div className="text-xs font-mono text-[var(--text-accent)]">
+                    {edu.institution} · {edu.period}
+                  </div>
+                  <p className="font-editorial text-xs text-[var(--text-secondary)] mt-0.5">
+                    {edu.details}
+                  </p>
+                </div>
+              ))}
             </div>
 
             {/* Complete Skills Directory */}
@@ -736,14 +774,40 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
               </p>
             </div>
 
+            {/* Authentic Info Card */}
+            <div className="p-4 rounded-xl bg-[var(--surface-1)] border border-[var(--border)] font-mono text-xs space-y-2">
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <MapPin className="w-3.5 h-3.5 text-sky-400" />
+                <span>{profile.location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                <a href={`tel:${profile.phone}`} className="hover:underline">{profile.phone}</a>
+                <button
+                  onClick={copyPhone}
+                  className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] ml-2 cursor-pointer"
+                >
+                  {isPhoneCopied ? "✓ Copied" : "[Copy Phone]"}
+                </button>
+              </div>
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <Mail className="w-3.5 h-3.5 text-amber-400" />
+                <a href={`mailto:${profile.email}`} className="hover:underline">{profile.email}</a>
+              </div>
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <Globe className="w-3.5 h-3.5 text-purple-400" />
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="hover:underline">{profile.website}</a>
+              </div>
+            </div>
+
             {/* Quick Contact Action Buttons */}
             <div className="flex flex-wrap gap-2.5">
               <button
                 onClick={copyEmail}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--fill-primary)] text-[var(--on-primary)] text-xs font-medium cursor-pointer hover:opacity-90 transition-opacity"
               >
-                {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                <span>{isCopied ? "Email Copied to Clipboard" : `Copy ${profile.email}`}</span>
+                {isEmailCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                <span>{isEmailCopied ? "Email Copied" : `Copy Email`}</span>
               </button>
 
               <a
@@ -827,7 +891,7 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
         {/* Newspaper Colophon Footer */}
         <footer className="mt-12 pt-6 border-t-2 border-[var(--text-primary)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--text-muted)]">
           <div>
-            © 2026 {profile.name} · All rights reserved
+            © 2026 {profile.name} · {profile.location} · {profile.phone}
           </div>
           <div>
             Published with Next.js 15, OpenNext &amp; Cloudflare Edge

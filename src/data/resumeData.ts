@@ -50,10 +50,13 @@ export interface ResumeData {
     editorialSubtitle: string;
     shortBio: string;
     location: string;
+    phone: string;
     email: string;
     github: string;
     githubUsername: string;
     linkedin: string;
+    website: string;
+    avatarUrl: string;
     status: string;
     statusTicker: string[];
     yearsOfExperience: string;
@@ -77,12 +80,15 @@ export const resumeData: ResumeData = {
     title: "Lead Systems Architect & Distributed Cloud Engineer",
     journalVolume: "Vol. IV · Systems Architecture & Edge Computing Chronicle",
     editorialSubtitle: "Specializing in Cloudflare Edge computing, million-row sheet virtualization, sub-second AI RAG pipelines, and high-concurrency monorepos.",
-    shortBio: "Architecting high-throughput edge systems and high-scale data engines. Proven track record at Yupsis and Sitgram delivering sub-second AI omnichannel pipelines, 1,000,000+ virtualized spreadsheet cells, and zero-loss IoT command queues.",
-    location: "Dhaka, Bangladesh • Open to Global Remote",
+    shortBio: "Architecting high-throughput edge systems and high-scale data engines. Proven engineering track record across Yupsis, Sitgram, and ShunnoIT delivering sub-second AI omnichannel pipelines, 1,000,000+ virtualized spreadsheet cells, and zero-loss IoT command queues.",
+    location: "Rajshahi, Bangladesh",
+    phone: "+8801772703036",
     email: "muhammad.sujon.cse@gmail.com",
     github: "https://github.com/developer-sujon",
     githubUsername: "developer-sujon",
-    linkedin: "https://linkedin.com/in/muhammad-sujon",
+    linkedin: "https://www.linkedin.com/in/muhammadsujon",
+    website: "https://devsujon.com",
+    avatarUrl: "/sujon-avatar.png",
     status: "Available for High-Impact Roles & Systems Consulting",
     statusTicker: [
       "Open to high-impact systems roles",
@@ -90,12 +96,13 @@ export const resumeData: ResumeData = {
       "1,000,000+ rows sheet virtualization",
       "Replies within 24 hours",
     ],
-    yearsOfExperience: "4+ Years",
+    yearsOfExperience: "5+ Years",
     coreHighlights: [
       "At Yupsis: Architected Two-Zone Split Architecture for Zotlyx, combining Cloudflare Workers with Supabase PostgreSQL.",
       "At Yupsis: Engineered stateful 5s Durable Object Debounce Session, slashing redundant LLM calls by 68%.",
       "At Sitgram: Virtualized and rendered 1,000,000+ data cells in Elizn inside a single sheet with zero main-thread freezing.",
       "At Yupsis: Built resilient asynchronous pending command queues for Eazlock IoT device installment enforcement.",
+      "At ShunnoIT: Shipped NetFee ISP Billing SaaS and Hisabnikash Inventory Systems with Nest.js, Redis, and RabbitMQ.",
     ],
   },
   metrics: [
@@ -176,18 +183,34 @@ export const resumeData: ResumeData = {
       ],
     },
     {
-      company: "Independent Systems & Web Engineering",
-      role: "Full-Stack Engineer",
-      location: "Remote",
-      period: "2021 – 2023",
-      type: "Contract",
-      summary: "Built high-performance web applications, REST APIs, and database schemas for SaaS clients globally.",
+      company: "ShunnoIT",
+      role: "Software Engineer",
+      location: "Hybrid · Rajshahi, Bangladesh",
+      period: "Nov 2022 – 2023",
+      type: "Full-Time",
+      summary: "Engineered enterprise billing platforms, inventory management microservices, and automated payment gateways.",
       highlights: [
-        "Developed full-stack web applications and microservices using React, Node.js, Express, and PostgreSQL.",
-        "Optimized client rendering pipelines for 95+ Google Lighthouse scores and sub-second First Contentful Paint.",
+        "Architected and deployed NetFee ISP Billing SaaS, automating customer online payments, automatic bandwidth on/off triggers, and reseller accounting.",
+        "Developed Hisabnikash inventory management system supporting multi-store stock tracking, customer installments, and automated SMS notifications using Nest.js & React.",
+        "Built Shunno Pay, a webhook-based payment gateway facilitating automated merchant settlements via Express.js, PostgreSQL, and Prisma.",
+        "Implemented RabbitMQ and Redis microservice message brokers, real-time Socket.io notifications, and AWS/GCP DevOps workflows.",
       ],
-      projectsMentioned: [],
-      technologies: ["React", "Next.js", "Node.js", "Express", "PostgreSQL", "Tailwind CSS", "Docker"],
+      projectsMentioned: ["Hisabnikash", "NetFee", "Shunno Pay", "Shunno Storage"],
+      technologies: ["Nest.js", "Express.js", "React", "Node.js", "MongoDB", "PostgreSQL", "RabbitMQ", "Redis", "Docker", "Socket.io"],
+    },
+    {
+      company: "WorldSoftZone",
+      role: "Frontend Developer",
+      location: "Hybrid · Meherpur, Bangladesh",
+      period: "Dec 2020 – Aug 2022",
+      type: "Full-Time",
+      summary: "Developed modern web applications, e-commerce storefronts, and client management systems.",
+      highlights: [
+        "Created and tested scalable web applications using JavaScript, Tailwind CSS, Bootstrap, and AJAX.",
+        "Troubleshot frontend rendering bottlenecks and collaborated with UI designers to implement responsive specifications.",
+      ],
+      projectsMentioned: ["WorldSoftZone Portal", "Aristo Computer Inventory"],
+      technologies: ["JavaScript", "React", "Tailwind CSS", "Bootstrap", "AJAX", "WordPress"],
     },
   ],
   skillCategories: [
@@ -201,8 +224,8 @@ export const resumeData: ResumeData = {
         { name: "Cloudflare Vectorize", highlight: true },
         { name: "Hyperdrive (Pooling)", highlight: true },
         { name: "Cloudflare KV & R2" },
-        { name: "OpenNext" },
-        { name: "Docker" },
+        { name: "RabbitMQ & Redis", highlight: true },
+        { name: "Docker & VPS DevOps", highlight: true },
       ],
     },
     {
@@ -213,19 +236,20 @@ export const resumeData: ResumeData = {
         { name: "Handsontable", highlight: true },
         { name: "Web Workers (Off-Thread Compute)", highlight: true },
         { name: "ArrayBuffer Zero-Copy Sharing", highlight: true },
-        { name: "Time-Series Partitioning" },
         { name: "PostgreSQL & Supabase", highlight: true },
-        { name: "Drizzle ORM", highlight: true },
+        { name: "Drizzle ORM & Prisma", highlight: true },
+        { name: "MongoDB", highlight: true },
       ],
     },
     {
       title: "Backend & API Engineering",
       icon: "Server",
       skills: [
-        { name: "TypeScript", highlight: true },
-        { name: "Node.js", highlight: true },
-        { name: "Hono", highlight: true },
+        { name: "TypeScript & JavaScript", highlight: true },
+        { name: "Node.js & Nest.js", highlight: true },
+        { name: "Hono & Express.js", highlight: true },
         { name: "oRPC (Type-Safe RPC)", highlight: true },
+        { name: "Socket.io Real-Time", highlight: true },
         { name: "Idempotent Payment APIs" },
         { name: "Cryptographic HMAC Webhooks" },
         { name: "Turborepo & Monorepos", highlight: true },
@@ -247,7 +271,7 @@ export const resumeData: ResumeData = {
       icon: "Layout",
       skills: [
         { name: "Next.js 15 (App Router)", highlight: true },
-        { name: "React 19", highlight: true },
+        { name: "React 19 & Redux", highlight: true },
         { name: "Tailwind CSS", highlight: true },
         { name: "Zustand State Isolation" },
         { name: "Radix UI & Shadcn" },
@@ -257,10 +281,16 @@ export const resumeData: ResumeData = {
   ],
   education: [
     {
-      degree: "Bachelor of Science in Computer Science & Engineering (B.Sc. in CSE)",
-      institution: "Dhaka International University (DIU)",
-      period: "Graduated",
-      details: "Focus on Distributed Systems, Algorithms, Database Management Systems, and Software Architecture.",
+      degree: "Diploma in Computer Science & Engineering (Diploma in CSE)",
+      institution: "Meherpur College of Engineering and Technology",
+      period: "Technical Education",
+      details: "Comprehensive coursework in Data Structures, Algorithms, Microservices, and Computer Networks.",
+    },
+    {
+      degree: "Secondary School Certificate (SSC)",
+      institution: "Amjhupi Secondary School",
+      period: "Passing Year: 2018",
+      details: "GPA: 3.87",
     },
   ],
 };
