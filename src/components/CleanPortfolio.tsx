@@ -156,16 +156,16 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased transition-colors duration-200">
-      <div className="max-w-2xl mx-auto px-5 sm:px-6 py-12 sm:py-20 space-y-10">
+      <div className="max-w-2xl mx-auto px-5 sm:px-6 pt-6 sm:pt-10 pb-16 sm:pb-24 space-y-10">
         
         {/* 1. HERO & IDENTITY */}
         <header className="space-y-4">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
             
             {/* Avatar & Title */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               <div className="relative shrink-0">
-                <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
                   <img
                     src={profile.avatarUrl}
                     alt={profile.name}
@@ -174,32 +174,28 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                 </div>
                 {/* Active online dot */}
                 <span
-                  className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#09090b] pointer-events-none"
+                  className="absolute bottom-0.5 right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#09090b] pointer-events-none"
                   title="Active now"
                 />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                  <h1 className="text-lg sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
                     {profile.name}
                   </h1>
-                  <VerifiedBadgeIcon className="w-5 h-5" />
+                  <VerifiedBadgeIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 </div>
-                
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {profile.title}
-                </p>
 
                 <div className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 pt-0.5">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span>{profile.location}</span>
+                  <MapPin className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{profile.location}</span>
                 </div>
               </div>
             </div>
 
             {/* Top Right Controls */}
-            <div className="flex items-center gap-2 shrink-0 pt-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pt-0.5 sm:pt-1">
               <button
                 onClick={toggleTheme}
                 aria-label="Toggle theme"
@@ -211,29 +207,31 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               <a
                 href="/Muhammad-Sujon-CV.pdf"
                 download="Muhammad-Sujon-CV.pdf"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
+                aria-label="Download Resume"
+                title="Download Resume"
+                className="w-8 h-8 sm:w-auto sm:px-3 sm:py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Resume</span>
+                <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <span className="hidden sm:inline">Resume</span>
               </a>
             </div>
           </div>
 
           {/* Bio text */}
           <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
-            Lead Software Engineer and Systems Architect building high-performance web platforms and cloud infrastructure. Currently leading engineering at{" "}
+            Software Engineer building web platforms and cloud infrastructure. Currently working at{" "}
             <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, with core engineering experience across{" "}
             <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> and{" "}
             <span className="text-zinc-900 dark:text-zinc-100 font-medium">Shunno IT</span> building multi-tenant monorepos, edge APIs, IoT command queues, and production SaaS platforms.
           </p>
 
           {/* Clean Contact Links */}
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
+          <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-5 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
             <button
               onClick={copyEmail}
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer flex items-center gap-1.5"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer flex items-center gap-1.5 break-all sm:break-normal"
             >
-              <Mail className="w-3.5 h-3.5" />
+              <Mail className="w-3.5 h-3.5 shrink-0" />
               <span>{emailCopied ? "Email copied!" : profile.email}</span>
             </button>
 
@@ -241,7 +239,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               href="https://wa.me/8801772703036"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5 shrink-0"
             >
               <WhatsAppIcon className="w-3.5 h-3.5" />
               <span>{profile.phone}</span>
@@ -251,7 +249,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               href={profile.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
             >
               <GithubIcon className="w-3.5 h-3.5" />
               <span>GitHub ↗</span>
@@ -261,7 +259,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
             >
               <LinkedinIcon className="w-3.5 h-3.5" />
               <span>LinkedIn ↗</span>
@@ -271,7 +269,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               href={profile.medium || "https://medium.com/@muhammad-sujon"}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
             >
               <MediumIcon className="w-3.5 h-3.5" />
               <span>Medium ↗</span>
@@ -280,11 +278,11 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         </header>
 
         {/* 2. NAVIGATION TABS */}
-        <nav className="flex items-center gap-5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-xs overflow-x-auto no-scrollbar">
+        <nav className="flex items-center justify-between sm:justify-start gap-2.5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-xs overflow-x-auto no-scrollbar -mx-1 px-1 sm:mx-0 sm:px-0">
           {[
             { id: "overview", label: "Overview" },
             { id: "projects", label: "Projects" },
-            { id: "articles", label: `Articles (${articles.length})` },
+            { id: "articles", label: "Articles" },
             { id: "experience", label: "Experience" },
             { id: "contact", label: "Contact" },
           ].map((tab) => (
@@ -314,8 +312,8 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </h2>
               <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
                 <p>
-                  I&apos;m a Lead Software Engineer and Systems Architect with 5+ years of experience building and scaling web platforms. Currently, I lead engineering at{" "}
-                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, where I direct team delivery, own Turborepo monorepo architecture, and build type-safe microservices with oRPC.
+                  I&apos;m a Software Engineer with 5+ years of experience building and scaling web platforms. Currently at{" "}
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, working on Turborepo monorepo architecture and type-safe microservices with oRPC.
                 </p>
                 <p>
                   Previously at <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> and{" "}
@@ -348,7 +346,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   >
                     <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors">
                           {metadata.title.split("—")[0].trim()}
                         </span>
                         {metadata.company && (
@@ -470,7 +468,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                         <span>·</span>
                         <span>{art.readTime}</span>
                       </div>
-                      <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1">
+                      <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors line-clamp-1">
                         {art.title}
                       </h3>
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1 font-normal">
@@ -655,7 +653,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                         <span>{art.readTime}</span>
                       </div>
 
-                      <h3 className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                      <h3 className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors leading-snug">
                         {art.title}
                       </h3>
                     </div>

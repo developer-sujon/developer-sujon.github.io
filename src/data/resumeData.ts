@@ -93,10 +93,10 @@ export const resumeData: ResumeData = {
   profile: {
     name: "Muhammad Sujon",
     englishName: "Muhammad Sujon",
-    title: "Lead Software Engineer & Systems Architect",
-    journalVolume: "Vol. IV · Systems Architecture & Distributed Systems",
-    editorialSubtitle: "Specializing in multi-tenant monorepos, edge APIs, microservices, and high-performance web systems.",
-    shortBio: "Lead Software Engineer and Systems Architect with 5+ years of experience building scalable web platforms, type-safe APIs, and cloud infrastructure across Sitgram, Yupsis, and Shunno IT.",
+    title: "Software Engineer",
+    journalVolume: "Software Engineering & Web Architecture",
+    editorialSubtitle: "Building multi-tenant monorepos, clean APIs, and reliable web platforms.",
+    shortBio: "Software Engineer with 5+ years of experience building web platforms, type-safe APIs, and cloud infrastructure across Sitgram, Yupsis, and Shunno IT.",
     location: "Rajshahi, Bangladesh",
     phone: "+8801772703036",
     email: "muhammad.sujon.cse@gmail.com",
@@ -106,7 +106,7 @@ export const resumeData: ResumeData = {
     medium: "https://medium.com/@muhammad-sujon",
     website: "https://devsujon.com",
     avatarUrl: "/sujon-avatar.png",
-    status: "Available for Senior Roles & Architecture Consulting",
+    status: "Available for Engineering Roles & Projects",
     statusTicker: [
       "Open to senior engineering roles",
       "Turborepo monorepos & oRPC",

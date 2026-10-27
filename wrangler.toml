@@ -1,7 +1,10 @@
-name = "sujon-portfolio"
+name = "sujon"
+account_id = "ad44d02d107029e6e956dcb4784469d2"
 main = ".open-next/worker.js"
-compatibility_date = "2025-01-01"
+compatibility_date = "2026-07-01"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = true
 
 [assets]
 directory = ".open-next/assets"

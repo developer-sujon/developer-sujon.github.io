@@ -1,28 +1,11 @@
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
 import { CleanPortfolio } from "@/components/CleanPortfolio";
 
+export const dynamic = "force-static";
+
 export const metadata = {
-  title: "Muhammad Sujon · Lead Systems Architect & Distributed Cloud Engineer",
-  description: "Systems Architect & Senior Full-Stack Engineer at Yupsis and Sitgram. Specializing in Cloudflare edge computing, million-row sheet virtualization, and IoT command queues.",
-  keywords: [
-    "Muhammad Sujon",
-    "Systems Architect",
-    "Yupsis",
-    "Sitgram",
-    "Zotlyx",
-    "Elizn",
-    "Eazlock",
-    "Torongo",
-    "Cloudflare Workers",
-    "Next.js 15",
-  ],
-  authors: [{ name: "Muhammad Sujon" }],
-  openGraph: {
-    title: "Muhammad Sujon · Lead Systems Architect",
-    description: "Systems portfolio of Muhammad Sujon featuring Zotlyx Two-Zone Edge Architecture and Elizn Million-Row Sheet Virtualization.",
-    type: "website",
-    url: "https://github.com/developer-sujon",
-  },
+  title: "Muhammad Sujon · Software Engineer",
+  description: "Software Engineer with 5+ years of experience building web platforms, Turborepo monorepos, and Cloudflare edge systems.",
 };
 
 export default async function HomePage() {
