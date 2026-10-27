@@ -2,6 +2,8 @@
 title: "Torongo Pay — Resilient Payment Orchestration & Transaction Monorepo"
 slug: "torongo-pay"
 tagline: "Scalable multi-provider payment gateway aggregator with cryptographic webhook signature verification and idempotent reconciliation"
+company: "Yupsis"
+kicker: "FinTech & Payment Orchestration · Yupsis"
 role: "Backend & Systems Architect"
 period: "2023 – 2024"
 status: "Production"

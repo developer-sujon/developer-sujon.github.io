@@ -1,86 +1,121 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --border-color: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --accent: #0284c7;
-    --accent-glow: rgba(2, 132, 199, 0.15);
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-  }
+:root {
+  --surface-2: #ffffff;
+  --surface-1: #f7f6f2;
+  --text-primary: #1a1918;
+  --text-secondary: #5c5a55;
+  --text-muted: #85837d;
+  --border: rgba(26, 25, 24, 0.12);
+  --border-strong: rgba(26, 25, 24, 0.26);
+  --border-stronger: rgba(26, 25, 24, 0.5);
+  --bg-accent: #eaf2fb;
+  --text-accent: #1660a5;
+  --fill-accent: #3284db;
+  --border-accent: #86b8eb;
+  --fill-primary: #1a1918;
+  --on-primary: #ffffff;
+  --bg-success: #eaf3de;
+  --text-success: #366c0e;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
 
-  .dark {
-    --bg-primary: #080c14;
-    --bg-secondary: #0d1322;
-    --bg-tertiary: #131c31;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --accent: #38bdf8;
-    --accent-glow: rgba(56, 189, 248, 0.2);
-    --card-bg: rgba(13, 19, 34, 0.7);
-    --card-border: rgba(255, 255, 255, 0.08);
-  }
+html.dark {
+  --surface-2: #161514;
+  --surface-1: #21201e;
+  --text-primary: #f2efe9;
+  --text-secondary: #b2afa6;
+  --text-muted: #85837d;
+  --border: rgba(242, 239, 233, 0.13);
+  --border-strong: rgba(242, 239, 233, 0.25);
+  --border-stronger: rgba(242, 239, 233, 0.45);
+  --bg-accent: rgba(55, 138, 221, 0.18);
+  --text-accent: #84bbf5;
+  --fill-accent: #378add;
+  --border-accent: #378add;
+  --fill-primary: #f2efe9;
+  --on-primary: #161514;
+  --bg-success: rgba(99, 153, 34, 0.2);
+  --text-success: #9ad059;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--surface-2);
   color: var(--text-primary);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
   transition: background-color 0.2s ease, color 0.2s ease;
   overflow-x: hidden;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--card-border);
+.font-editorial {
+  font-family: var(--font-serif);
 }
 
-.glass-nav {
-  background: rgba(8, 12, 20, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--card-border);
+.font-code {
+  font-family: var(--font-mono);
 }
 
-html:not(.dark) .glass-nav {
-  background: rgba(255, 255, 255, 0.88);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+/* Drop Cap for journalistic prose */
+.drop-cap:first-letter {
+  float: left;
+  font-size: 56px;
+  line-height: 0.85;
+  padding: 5px 9px 0 0;
+  font-weight: 500;
+  font-family: var(--font-serif);
+  color: var(--text-primary);
+}
+
+/* Editorial Pull Quote */
+.pull-quote {
+  border-top: 2px solid var(--text-primary);
+  border-bottom: 0.5px solid var(--border);
+  padding: 18px 0;
+  margin: 24px 0;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Blinking live ticker dot */
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-success);
+  display: inline-block;
+  margin-right: 6px;
+  animation: blinkDot 2s infinite ease-in-out;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.45);
+  background: var(--border-strong);
+  border-radius: 3px;
 }
 
 /* Markdown prose styling */
 .markdown-body {
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.85;
+  font-size: 15px;
 }
 
 .markdown-body h1,
@@ -88,144 +123,100 @@ html:not(.dark) .glass-nav {
 .markdown-body h3,
 .markdown-body h4 {
   color: var(--text-primary);
-  font-weight: 700;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
   letter-spacing: -0.02em;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.markdown-body h1 { font-size: 1.75rem; }
-.markdown-body h2 { font-size: 1.35rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; }
-.markdown-body h3 { font-size: 1.15rem; }
+.markdown-body h1 { font-size: 1.85rem; }
+.markdown-body h2 { font-size: 1.45rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+.markdown-body h3 { font-size: 1.2rem; }
 
 .markdown-body p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
 }
 
 .markdown-body ul,
 .markdown-body ol {
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
+  margin-bottom: 1.15rem;
+  padding-left: 1.4rem;
 }
 
-.markdown-body ul {
-  list-style-type: disc;
-}
-
-.markdown-body ol {
-  list-style-type: decimal;
-}
-
-.markdown-body li {
-  margin-bottom: 0.4rem;
-}
+.markdown-body ul { list-style-type: square; }
+.markdown-body ol { list-style-type: decimal; }
+.markdown-body li { margin-bottom: 0.35rem; }
 
 .markdown-body code {
-  background: rgba(148, 163, 184, 0.15);
-  color: var(--accent);
-  padding: 0.15rem 0.35rem;
+  background: var(--surface-1);
+  color: var(--text-accent);
+  padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.88em;
+  border: 0.5px solid var(--border);
 }
 
 .markdown-body pre {
-  background: #050811 !important;
-  color: #e2e8f0;
+  background: #0d0c0b !important;
+  color: #f2efe9;
   padding: 1.1rem;
-  border-radius: 0.6rem;
+  border-radius: 0.5rem;
   overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
 }
 
 .markdown-body pre code {
   background: transparent;
   color: inherit;
   padding: 0;
-  border-radius: 0;
-  font-size: 0.85rem;
-}
-
-.markdown-body blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 1rem;
-  margin: 1rem 0;
-  color: var(--text-muted);
-  font-style: italic;
+  border: none;
 }
 
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin: 1.25rem 0;
+  font-size: 0.88rem;
 }
 
 .markdown-body th,
 .markdown-body td {
-  padding: 0.6rem 0.9rem;
-  border: 1px solid var(--card-border);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
   text-align: left;
-  font-size: 0.9rem;
 }
 
 .markdown-body th {
-  background: rgba(148, 163, 184, 0.08);
+  background: var(--surface-1);
   color: var(--text-primary);
   font-weight: 600;
 }
 
 .markdown-body hr {
   border: 0;
-  border-top: 1px solid var(--card-border);
-  margin: 1.75rem 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
 }
 
-/* PRINT MEDIA STYLES FOR CRISP 2-PAGE RESUME EXPORT */
+/* PRINT MEDIA */
 @media print {
   @page {
     margin: 12mm 15mm;
     size: A4 portrait;
   }
-
   body {
     background: #ffffff !important;
     color: #111827 !important;
-    font-size: 11pt !important;
-    line-height: 1.4 !important;
   }
-
   .no-print,
-  nav,
-  .print-hide,
   button,
-  .theme-toggle,
-  .modal-backdrop {
+  .print-hide {
     display: none !important;
-  }
-
-  .print-only {
-    display: block !important;
-  }
-
-  .glass-panel {
-    background: #ffffff !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-
-  a {
-    text-decoration: none !important;
-    color: #111827 !important;
-  }
-
-  .page-break-before {
-    page-break-before: always;
-  }
-
-  .break-inside-avoid {
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
 }

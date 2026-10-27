@@ -23,6 +23,8 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
         title: data.title || "Untitled Project",
         slug: data.slug || fileName.replace(/\.md$/, ""),
         tagline: data.tagline || "",
+        company: data.company || "",
+        kicker: data.kicker || "",
         role: data.role || "Lead Engineer",
         period: data.period || "",
         status: data.status || "Production",
@@ -37,8 +39,13 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
       } as ProjectMetadata;
     });
 
-  // Sort featured first
-  return allProjects.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  // Sort featured first, then by company (Yupsis first, then Sitgram)
+  return allProjects.sort((a, b) => {
+    if (a.featured !== b.featured) return b.featured ? 1 : -1;
+    if (a.company === "Yupsis" && b.company !== "Yupsis") return -1;
+    if (b.company === "Yupsis" && a.company !== "Yupsis") return 1;
+    return 0;
+  });
 }
 
 export async function getProjectBySlug(slug: string): Promise<{
@@ -59,6 +66,8 @@ export async function getProjectBySlug(slug: string): Promise<{
     title: data.title || "Untitled Project",
     slug: data.slug || slug,
     tagline: data.tagline || "",
+    company: data.company || "",
+    kicker: data.kicker || "",
     role: data.role || "Lead Engineer",
     period: data.period || "",
     status: data.status || "Production",

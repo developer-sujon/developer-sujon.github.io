@@ -8,6 +8,8 @@ export interface ProjectMetadata {
   title: string;
   slug: string;
   tagline: string;
+  company?: string;
+  kicker?: string;
   role: string;
   period: string;
   status: string;
@@ -27,7 +29,9 @@ export interface ExperienceItem {
   location: string;
   period: string;
   type: string;
+  summary: string;
   highlights: string[];
+  projectsMentioned: string[];
   technologies: string[];
 }
 
@@ -42,6 +46,8 @@ export interface ResumeData {
     name: string;
     englishName: string;
     title: string;
+    journalVolume: string;
+    editorialSubtitle: string;
     shortBio: string;
     location: string;
     email: string;
@@ -49,6 +55,7 @@ export interface ResumeData {
     githubUsername: string;
     linkedin: string;
     status: string;
+    statusTicker: string[];
     yearsOfExperience: string;
     coreHighlights: string[];
   };
@@ -67,58 +74,68 @@ export const resumeData: ResumeData = {
   profile: {
     name: "Muhammad Sujon",
     englishName: "Muhammad Sujon",
-    title: "Lead Systems Architect & Full-Stack Cloud Engineer",
-    shortBio: "Specializing in Cloudflare Edge computing (Workers, Durable Objects, Queues, Vectorize), sub-second AI RAG pipelines, distributed high-concurrency systems, and scalable TypeScript monorepos.",
+    title: "Lead Systems Architect & Distributed Cloud Engineer",
+    journalVolume: "Vol. IV · Systems Architecture & Edge Computing Chronicle",
+    editorialSubtitle: "Specializing in Cloudflare Edge computing, million-row sheet virtualization, sub-second AI RAG pipelines, and high-concurrency monorepos.",
+    shortBio: "Architecting high-throughput edge systems and high-scale data engines. Proven track record at Yupsis and Sitgram delivering sub-second AI omnichannel pipelines, 1,000,000+ virtualized spreadsheet cells, and zero-loss IoT command queues.",
     location: "Dhaka, Bangladesh • Open to Global Remote",
     email: "muhammad.sujon.cse@gmail.com",
     github: "https://github.com/developer-sujon",
     githubUsername: "developer-sujon",
     linkedin: "https://linkedin.com/in/muhammad-sujon",
     status: "Available for High-Impact Roles & Systems Consulting",
+    statusTicker: [
+      "Open to high-impact systems roles",
+      "Sub-second edge AI pipelines",
+      "1,000,000+ rows sheet virtualization",
+      "Replies within 24 hours",
+    ],
     yearsOfExperience: "4+ Years",
     coreHighlights: [
-      "Architected Two-Zone Split Architecture for Zotlyx handling sub-second omnichannel AI messaging.",
-      "Engineered stateful Cloudflare Durable Objects to debounce user bursts, slashing LLM token costs by 68%.",
-      "Designed high-concurrency background cron & command queues for IoT device management in Eazlock.",
-      "Built resilient type-safe APIs using oRPC, Hono, Next.js 15, Drizzle ORM, and Supabase PostgreSQL.",
+      "At Yupsis: Architected Two-Zone Split Architecture for Zotlyx, combining Cloudflare Workers with Supabase PostgreSQL.",
+      "At Yupsis: Engineered stateful 5s Durable Object Debounce Session, slashing redundant LLM calls by 68%.",
+      "At Sitgram: Virtualized and rendered 1,000,000+ data cells in Elizn inside a single sheet with zero main-thread freezing.",
+      "At Yupsis: Built resilient asynchronous pending command queues for Eazlock IoT device installment enforcement.",
     ],
   },
   metrics: [
     {
-      label: "Edge Response Latency",
-      value: "< 50ms",
-      sub: "Global Cloudflare POPs",
+      label: "Edge AI Delivery",
+      value: "< 250ms",
+      sub: "Zotlyx Two-Zone Pipeline",
     },
     {
-      label: "LLM Cost Optimization",
+      label: "Sheet Virtualization",
+      value: "1M+ Cells",
+      sub: "Elizn 60 FPS Scrolling",
+    },
+    {
+      label: "LLM Cost Reduction",
       value: "68%",
       sub: "Via DO Burst Debounce",
     },
     {
-      label: "Production Monorepos",
-      value: "5+ Built",
-      sub: "Turborepo & OpenNext",
-    },
-    {
-      label: "Data Ingestion Pipeline",
+      label: "Command Reliability",
       value: "99.99%",
-      sub: "Zero Command Loss",
+      sub: "Eazlock IoT Consumers",
     },
   ],
   experiences: [
     {
-      company: "Zotlyx",
+      company: "Yupsis",
       role: "Lead Systems Architect & Full-Stack Engineer",
-      location: "Remote",
+      location: "Remote / Hybrid",
       period: "2024 – Present",
-      type: "Full-Time / Core Architect",
+      type: "Full-Time Core Architect",
+      summary: "Leading backend, edge computing, and AI systems architecture across flagship enterprise products: Zotlyx, Eazlock, and Torongo.",
       highlights: [
-        "Architected and deployed the Two-Zone split architecture, decoupling edge webhook ingestion (Cloudflare Workers, Queues) from transactional database systems (PostgreSQL/Supabase).",
-        "Invented an edge-native DebounceSession using Cloudflare Durable Objects with a 5-second inactivity alarm, aggregating user burst messages and eliminating 68% redundant LLM invocations.",
-        "Engineered multilingual semantic vector search on Cloudflare Vectorize with `bge-m3` embeddings, achieving sub-35ms semantic context retrieval for commerce queries.",
-        "Developed custom wildcard RBAC engine (`@workspace/access`) with end-to-end type safety between Next.js 15 dashboard and edge workers via oRPC.",
-        "Implemented real-time bi-directional customer widget SSE relay backed by Durable Objects and Hyperdrive connection pooling.",
+        "Architected Zotlyx Two-Zone Split Architecture, segregating edge ingestion (Cloudflare Workers, Queues, Vectorize) from transactional PostgreSQL (Supabase/Hyperdrive).",
+        "Engineered the DebounceSession Durable Object with 5s inactivity alarms, eliminating message-burst race conditions and cutting LLM token costs by 68%.",
+        "Designed and deployed multilingual RAG pipeline using Cloudflare Vectorize and bge-m3 embeddings for sub-35ms semantic context retrieval.",
+        "Built Eazlock IoT asynchronous pending command consumers (DevicePendingCommandProcessor), guaranteeing zero dropped commands for offline devices upon reconnection.",
+        "Developed Torongo Pay payment gateway abstraction with idempotent request hashing and cryptographic webhook signature validation.",
       ],
+      projectsMentioned: ["Zotlyx", "Eazlock", "Torongo Pay"],
       technologies: [
         "Cloudflare Workers",
         "Durable Objects",
@@ -133,57 +150,44 @@ export const resumeData: ResumeData = {
       ],
     },
     {
-      company: "Eazlock",
-      role: "Full-Stack & Background Processing Engineer",
-      location: "Remote / Hybrid",
-      period: "2024 – Present",
-      type: "Core Developer",
+      company: "Sitgram",
+      role: "Senior Frontend & Data Systems Engineer",
+      location: "Remote",
+      period: "2023 – 2024",
+      type: "Core Contributor",
+      summary: "Engineered massive-scale data visualization, spreadsheet virtualization, and monorepo tooling across Elizn and Willro.",
       highlights: [
-        "Designed asynchronous device pending command consumers (`DevicePendingCommandProcessor`), solving offline hardware disconnects with guaranteed delivery upon reconnection.",
-        "Engineered scheduled cron workers calculating overdue interest, grace period alerts, and automated hardware restriction lock protocols.",
-        "Built responsive merchant administrative portals with Next.js App Router, Tailwind CSS, and localized payment integrations (SSLCommerz, bKash).",
+        "Solved the complex million-row spreadsheet bottleneck in Elizn: virtualized 1,000,000+ data cells in a single sheet using Handsontable with 60 FPS scrolling and zero UI thread freeze.",
+        "Offloaded formula calculations, CSV exports, and event diff aggregation to Web Workers via zero-copy ArrayBuffer transferables.",
+        "Engineered real-time employee activity event pipelines connecting Supabase Edge Functions with PostgreSQL time-series partitioning and PostHog telemetry.",
+        "Architected Willro multi-tenant Turborepo monorepo, consolidating customer sites and admin dashboards with shared packages and 4.5x faster builds.",
       ],
+      projectsMentioned: ["Elizn", "Willro"],
       technologies: [
         "Next.js 15",
-        "TypeScript",
-        "Cron Scheduler",
-        "Command Queues",
-        "Tailwind CSS",
-        "PostgreSQL",
-        "Turborepo",
-      ],
-    },
-    {
-      company: "Torongo Pay",
-      role: "Backend & Systems Engineer",
-      location: "Dhaka, Bangladesh",
-      period: "2023 – 2024",
-      type: "Contract / Core Contributor",
-      highlights: [
-        "Architected an idempotent payment gateway abstraction service handling multi-provider routing and cryptographic HMAC signature validation.",
-        "Implemented transactional reconciliation workflows and dead-letter queue auditing for failed merchant webhooks.",
-        "Optimized PostgreSQL queries using Drizzle ORM and connection pooling for sub-10ms transaction ledgering.",
-      ],
-      technologies: [
-        "Node.js",
-        "TypeScript",
-        "PostgreSQL",
+        "Handsontable",
+        "Web Workers",
+        "Supabase PostgreSQL",
         "Drizzle ORM",
+        "Zustand",
+        "PostHog",
         "Turborepo",
-        "Webhooks",
+        "Docker",
       ],
     },
     {
-      company: "Independent Full-Stack Engineering",
-      role: "Systems & Web Developer",
+      company: "Independent Systems & Web Engineering",
+      role: "Full-Stack Engineer",
       location: "Remote",
       period: "2021 – 2023",
-      type: "Freelance",
+      type: "Contract",
+      summary: "Built high-performance web applications, REST APIs, and database schemas for SaaS clients globally.",
       highlights: [
-        "Developed full-stack web platforms, REST APIs, and database architectures for SaaS clients worldwide.",
-        "Authored reusable UI component libraries and optimized frontend loading performance for 95+ Google Lighthouse scores.",
+        "Developed full-stack web applications and microservices using React, Node.js, Express, and PostgreSQL.",
+        "Optimized client rendering pipelines for 95+ Google Lighthouse scores and sub-second First Contentful Paint.",
       ],
-      technologies: ["React", "Next.js", "Node.js", "Express", "PostgreSQL", "Docker", "Tailwind CSS"],
+      projectsMentioned: [],
+      technologies: ["React", "Next.js", "Node.js", "Express", "PostgreSQL", "Tailwind CSS", "Docker"],
     },
   ],
   skillCategories: [
@@ -195,10 +199,23 @@ export const resumeData: ResumeData = {
         { name: "Durable Objects", highlight: true },
         { name: "Cloudflare Queues", highlight: true },
         { name: "Cloudflare Vectorize", highlight: true },
-        { name: "Hyperdrive (Connection Pooling)", highlight: true },
+        { name: "Hyperdrive (Pooling)", highlight: true },
         { name: "Cloudflare KV & R2" },
-        { name: "OpenNext (Cloudflare)" },
+        { name: "OpenNext" },
         { name: "Docker" },
+      ],
+    },
+    {
+      title: "Big Data & Spreadsheet Engines",
+      icon: "Database",
+      skills: [
+        { name: "Million-Row Sheet Virtualization", highlight: true },
+        { name: "Handsontable", highlight: true },
+        { name: "Web Workers (Off-Thread Compute)", highlight: true },
+        { name: "ArrayBuffer Zero-Copy Sharing", highlight: true },
+        { name: "Time-Series Partitioning" },
+        { name: "PostgreSQL & Supabase", highlight: true },
+        { name: "Drizzle ORM", highlight: true },
       ],
     },
     {
@@ -209,9 +226,8 @@ export const resumeData: ResumeData = {
         { name: "Node.js", highlight: true },
         { name: "Hono", highlight: true },
         { name: "oRPC (Type-Safe RPC)", highlight: true },
-        { name: "REST & Webhook Handlers" },
-        { name: "Server-Sent Events (SSE)" },
-        { name: "Microservices & Clean Architecture" },
+        { name: "Idempotent Payment APIs" },
+        { name: "Cryptographic HMAC Webhooks" },
         { name: "Turborepo & Monorepos", highlight: true },
       ],
     },
@@ -223,20 +239,7 @@ export const resumeData: ResumeData = {
         { name: "Cloudflare Vectorize", highlight: true },
         { name: "BGE-M3 Multilingual Embeddings", highlight: true },
         { name: "Claude 3.5 Sonnet & OpenAI" },
-        { name: "CLIP Visual Embeddings" },
         { name: "Prompt Synthesis & Guardrails" },
-      ],
-    },
-    {
-      title: "Databases & Storage",
-      icon: "Database",
-      skills: [
-        { name: "PostgreSQL", highlight: true },
-        { name: "Supabase", highlight: true },
-        { name: "Drizzle ORM", highlight: true },
-        { name: "Cloudflare D1 (SQLite)" },
-        { name: "Redis & Upstash" },
-        { name: "Database Migrations & Seeding" },
       ],
     },
     {
@@ -245,10 +248,10 @@ export const resumeData: ResumeData = {
       skills: [
         { name: "Next.js 15 (App Router)", highlight: true },
         { name: "React 19", highlight: true },
-        { name: "Tailwind CSS 4", highlight: true },
-        { name: "Lucide Icons" },
-        { name: "Responsive UI & Dark/Light Mode" },
-        { name: "Print & PDF Ready CSS" },
+        { name: "Tailwind CSS", highlight: true },
+        { name: "Zustand State Isolation" },
+        { name: "Radix UI & Shadcn" },
+        { name: "Print & Editorial Typography", highlight: true },
       ],
     },
   ],

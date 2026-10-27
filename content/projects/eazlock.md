@@ -2,6 +2,8 @@
 title: "Eazlock — Enterprise IoT Device Locking & EMI Management Monorepo"
 slug: "eazlock"
 tagline: "High-reliability automated device locking and installment enforcement platform with background cron workers and command queue processors"
+company: "Yupsis"
+kicker: "IoT & Hardware EMI Security · Yupsis"
 role: "Full Stack & Background Processing Engineer"
 period: "2024 – Present"
 status: "Production"

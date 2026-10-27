@@ -2,6 +2,8 @@
 title: "Zotlyx — AI-Driven Omnichannel Support & RBAC Engine"
 slug: "zotlyx"
 tagline: "Autonomous multi-channel AI customer support platform with sub-second delivery and two-zone edge architecture"
+company: "Yupsis"
+kicker: "Cloudflare Edge & AI Architecture · Lead story"
 role: "Lead Systems Architect & Full Stack Engineer"
 period: "2024 – Present"
 status: "Production"
