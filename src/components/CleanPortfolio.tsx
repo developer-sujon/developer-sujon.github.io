@@ -100,7 +100,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
   // Top flagship systems for Overview
   const featuredProjects = projects.filter((p) =>
-    ["willro", "zotlyx", "torongo", "hisabnikash"].includes(p.metadata.slug)
+    ["willro", "zotlyx", "elizn", "torongo", "hisabnikash"].includes(p.metadata.slug)
   );
 
   const selectedProject = selectedSlug
@@ -246,225 +246,216 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         {/* TAB 1: OVERVIEW (Curated Executive Summary & Flagships)        */}
         {/* ============================================================== */}
         {activeTab === "overview" && (
-          <div className="space-y-10">
-            {/* Impact Metrics */}
-            <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-1">
-              {metrics.map((m, idx) => (
-                <div
-                  key={idx}
-                  className="p-3.5 rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1"
-                >
-                  <div className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 font-mono">
-                    {m.value}
-                  </div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-300 font-medium">
-                    {m.label}
-                  </div>
-                  {m.sub && (
-                    <div className="text-[11px] text-zinc-400 dark:text-zinc-500 leading-tight">
-                      {m.sub}
+          <div className="space-y-12">
+            
+            {/* 1. ARCHITECTURAL STATEMENT & IMPACT METRICS */}
+            <section className="space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Architectural Focus &amp; Core Specialty
+                </h2>
+                <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal">
+                  Specializing in distributed systems, Turborepo monorepos, and sub-second edge AI pipelines. Proven engineering leadership directing teams, virtualizing million-cell spreadsheet engines, and architecting zero-downtime microservices across production platforms.
+                </p>
+              </div>
+
+              {/* Minimalist Key Impact Metrics Strip */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-zinc-200 dark:border-zinc-800">
+                {metrics.map((m, idx) => (
+                  <div key={idx} className="space-y-0.5">
+                    <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 font-mono">
+                      {m.value}
                     </div>
-                  )}
-                </div>
-              ))}
+                    <div className="text-xs text-zinc-800 dark:text-zinc-200 font-medium">
+                      {m.label}
+                    </div>
+                    {m.sub && (
+                      <div className="text-[11px] text-zinc-400 dark:text-zinc-500 leading-tight">
+                        {m.sub}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </section>
 
-            {/* Featured Flagship Systems */}
-            <section className="space-y-3.5">
-              <div className="flex items-center justify-between pb-1 border-b border-zinc-200 dark:border-zinc-800">
+            {/* 2. SELECTED FLAGSHIP ARCHITECTURES */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
                 <div>
                   <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                    Featured Systems &amp; Flagships
+                    Flagship Systems Architecture
                   </h2>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                    Production platforms architected for high throughput and scale.
+                    Production platforms architected for high throughput, low latency, and scale.
                   </p>
                 </div>
                 <button
                   onClick={() => navigateToTab("projects")}
-                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <span>All ({projects.length})</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
-              <div className="space-y-3">
+              {/* Clean Row-based Flagship List */}
+              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                 {featuredProjects.map(({ metadata }) => (
                   <div
                     key={metadata.slug}
                     onClick={() => setSelectedSlug(metadata.slug)}
-                    className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="group py-4 px-2 -mx-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-start justify-between gap-3"
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                           {metadata.title.split("—")[0].trim()}
                         </span>
                         {metadata.company && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-medium">
                             {metadata.company}
                           </span>
                         )}
-                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 hidden sm:inline">
-                          · Flagship
-                        </span>
+                        {metadata.kicker && (
+                          <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 hidden sm:inline">
+                            · {metadata.kicker}
+                          </span>
+                        )}
                       </div>
                       
-                      <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 line-clamp-1 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
                         {metadata.tagline}
                       </p>
 
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {metadata.tags.slice(0, 4).map((tag) => (
-                          <span key={tag} className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
-                            #{tag}
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">
+                        {metadata.tags.slice(0, 4).map((tag, i) => (
+                          <span key={tag}>
+                            {tag}
+                            {i < Math.min(3, metadata.tags.length - 1) && (
+                              <span className="text-zinc-300 dark:text-zinc-700 ml-2">/</span>
+                            )}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 shrink-0 self-end sm:self-center font-medium">
-                      <span>Inspect</span>
+                    <div className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 shrink-0 self-end sm:self-center font-medium transition-colors">
+                      <span>Inspect Case Study</span>
                       <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* View all projects button */}
-              <button
-                onClick={() => navigateToTab("projects")}
-                className="w-full py-2.5 px-4 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 bg-zinc-50/30 dark:bg-zinc-900/20 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all flex items-center justify-between group cursor-pointer"
-              >
-                <span>View all 12 projects &amp; case studies</span>
-                <span className="flex items-center gap-1 font-medium group-hover:translate-x-0.5 transition-transform">
-                  Explore Projects <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </button>
+              {/* Explore all catalog trigger */}
+              <div className="pt-2">
+                <button
+                  onClick={() => navigateToTab("projects")}
+                  className="w-full py-2.5 px-3 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all flex items-center justify-between group cursor-pointer"
+                >
+                  <span>Explore complete production catalog ({projects.length} systems)</span>
+                  <span className="flex items-center gap-1 font-medium group-hover:translate-x-0.5 transition-transform">
+                    View Catalog <ArrowRight className="w-3 h-3" />
+                  </span>
+                </button>
+              </div>
             </section>
 
-            {/* Leadership & Current Roles Snapshot */}
-            <section className="space-y-3.5">
-              <div className="flex items-center justify-between pb-1 border-b border-zinc-200 dark:border-zinc-800">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Engineering Leadership Snapshot
-                </h2>
+            {/* 3. TECHNICAL DOMAINS & ARCHITECTURAL STACK */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
+                <div>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                    Technical Stack &amp; Architectural Domains
+                  </h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Core systems architecture capabilities developed across production workloads.
+                  </p>
+                </div>
                 <button
                   onClick={() => navigateToTab("experience")}
-                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <span>Full History (4)</span>
+                  <span>Career History</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Sitgram Card */}
-                <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">Sitgram</span>
-                    <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">Dec 2024 – Present</span>
-                  </div>
-                  <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                    Lead Software Engineer
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Directing team delivery, Turborepo monorepo architecture, end-to-end oRPC type contracts, RabbitMQ/Redis microservices, and Linux VPS infrastructure.
-                  </p>
-                  <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 pt-1">
-                    Shipped: Willro, Elizn
-                  </div>
-                </div>
-
-                {/* Yupsis Card */}
-                <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">Yupsis</span>
-                    <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">Sep 2024 – Dec 2025</span>
-                  </div>
-                  <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                    Software Engineer
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Architected Cloudflare edge pipelines, Vectorize RAG pipelines, MikroTik hotspot billing engines, and real-time SocketIO systems.
-                  </p>
-                  <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 pt-1">
-                    Shipped: Zotlyx, Torongo, Eazlock
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Core Technical Domains Matrix */}
-            <section className="space-y-3.5">
-              <div className="flex items-center justify-between pb-1 border-b border-zinc-200 dark:border-zinc-800">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Core Engineering Domains
-                </h2>
-                <button
-                  onClick={() => navigateToTab("experience")}
-                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Career Experience</span>
-                  <ArrowRight className="w-3 h-3" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 pt-1">
+                <div className="space-y-1.5">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
                     Distributed Cloud &amp; Edge
                   </div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                    Cloudflare Workers, Durable Objects, Docker, Linux VPS, Nginx, Hyperdrive
-                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Cloudflare Workers, Durable Objects, Docker, Linux VPS, Nginx, Hyperdrive, Redis Caching
+                  </p>
                 </div>
 
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                <div className="space-y-1.5">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     Backend Architecture &amp; Scale
                   </div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                    NestJS, Node.js, RabbitMQ, Redis, oRPC Type Safety, Turborepo
-                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Turborepo Monorepo, oRPC Type Safety, NestJS, Node.js, RabbitMQ Message Queues, PostgreSQL
+                  </p>
                 </div>
 
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                <div className="space-y-1.5">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     Real-Time Systems &amp; AI
                   </div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                    Vectorize RAG, SocketIO, WebSockets, LLM Burst Debounce, Workers AI
-                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Vectorize RAG Pipelines, SocketIO, WebSockets, LLM Burst Debounce, Workers AI
+                  </p>
                 </div>
 
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                <div className="space-y-1.5">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                     Automation &amp; Hardware
                   </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    n8n Workflow Automation, Webhooks, IoT &amp; Arduino, Sensor Telemetry, Serial Comms
+                  </p>
+                </div>
+              </div>
+
+              {/* Current Engineering Directorship Summary */}
+              <div className="pt-2">
+                <div className="p-3.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                    n8n Workflow Automation, Webhooks, IoT &amp; Arduino, Sensor Telemetry
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">Current Role:</span> Directing engineering teams and monorepo architecture at <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span> (Dec 2024 – Present).
                   </div>
+                  <button
+                    onClick={() => navigateToTab("experience")}
+                    className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer shrink-0"
+                  >
+                    <span>Full Experience</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             </section>
 
-            {/* Quick Contact CTA */}
-            <section className="p-4 sm:p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Ready to discuss high-throughput systems or leadership roles?
+            {/* 4. EXECUTIVE ENGAGEMENT CALLOUT */}
+            <section className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-0.5">
+                <div className="text-xs font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                  Engagement &amp; Opportunities
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  Available for full-time leadership, architecture consulting, or advisory.
+                <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                  Available for Senior Systems Roles, Architecture Consulting &amp; Advisory
                 </div>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => navigateToTab("contact")}
-                  className="px-3.5 py-1.5 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
                 >
                   Write Message
                 </button>
@@ -472,7 +463,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   href="https://wa.me/8801772703036"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors flex items-center gap-1.5"
                 >
                   <WhatsAppIcon className="w-3 h-3" />
                   <span>WhatsApp</span>
