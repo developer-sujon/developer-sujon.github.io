@@ -130,31 +130,19 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* Facebook Live / Online Active Badge */}
+                {/* Facebook Online Active Dot - Clean White border in light mode, Dark in dark mode */}
                 <span
-                  className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[var(--bg-primary)] ring-1 ring-emerald-500/30 flex items-center justify-center shadow-xs"
+                  className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-black shadow-xs"
                   title="Active now"
-                  aria-label="Active now"
-                >
-                  <span className="w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75 absolute" />
-                </span>
+                />
               </div>
 
               <div className="space-y-0.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                      {profile.name}
-                    </h1>
-                    <VerifiedBadgeIcon className="w-5 h-5" />
-                  </div>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 font-mono">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                    </span>
-                    Available
-                  </span>
+                <div className="flex items-center gap-1.5">
+                  <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                    {profile.name}
+                  </h1>
+                  <VerifiedBadgeIcon className="w-5 h-5" />
                 </div>
                 
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
