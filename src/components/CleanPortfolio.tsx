@@ -741,221 +741,43 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: CAPABILITIES (Dedicated Architecture & Tech Matrix)     */}
+        {/* TAB 4: CAPABILITIES                                           */}
         {/* ============================================================== */}
         {activeTab === "capabilities" && (
-          <div className="space-y-10">
-            {/* Header */}
-            <div className="space-y-1 pb-1 border-b border-zinc-200 dark:border-zinc-800">
+          <section className="space-y-6">
+            <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                Technical Capabilities &amp; Architecture Tooling
+                Technical Capabilities
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Production-tested tooling, frameworks, distributed primitives, and engineering paradigms across high-scale systems.
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                Core technologies, runtimes, and engineering tooling used across production platforms.
               </p>
             </div>
 
-            {/* 6 Rich Skill Category Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {skillCategories.map((cat, i) => (
                 <div
                   key={i}
-                  className="p-4 sm:p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-3.5 flex flex-col justify-between"
+                  className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-2.5"
                 >
-                  <div className="space-y-2">
-                    {/* Category Header */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 shrink-0">
-                          {cat.icon === "Cloud" && <Cloud className="w-3.5 h-3.5" />}
-                          {cat.icon === "Database" && <Database className="w-3.5 h-3.5" />}
-                          {cat.icon === "Server" && <Server className="w-3.5 h-3.5" />}
-                          {cat.icon === "Cpu" && <Cpu className="w-3.5 h-3.5" />}
-                          {cat.icon === "Layout" && <Layers className="w-3.5 h-3.5" />}
-                        </div>
-                        <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
-                          {cat.title}
-                        </h3>
-                      </div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-mono">
+                    {cat.title}
+                  </h3>
 
-                      {cat.badge && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
-                          {cat.badge}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Architectural Description */}
-                    {cat.description && (
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                        {cat.description}
-                      </p>
-                    )}
-
-                    {/* Skill Badges */}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {cat.skills.map((s, si) => (
-                        <span
-                          key={si}
-                          className={`text-xs font-mono transition-colors ${
-                            s.highlight
-                              ? "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium border border-zinc-200 dark:border-zinc-700/80 shadow-2xs"
-                              : "px-2 py-0.5 rounded-md text-[11px] text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-zinc-800/50"
-                          }`}
-                        >
-                          {s.highlight && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                          )}
-                          <span>{s.name}</span>
-                        </span>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap gap-1.5 text-xs font-mono">
+                    {cat.skills.map((s, si) => (
+                      <span
+                        key={si}
+                        className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/40"
+                      >
+                        {s.name}
+                      </span>
+                    ))}
                   </div>
-
-                  {/* Shipped Production Systems (Clickable) */}
-                  {cat.shippedProjects && cat.shippedProjects.length > 0 && (
-                    <div className="pt-2.5 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center gap-1.5 flex-wrap text-[11px] font-mono">
-                      <span className="text-zinc-400 dark:text-zinc-500">Proven in:</span>
-                      {cat.shippedProjects.map((pName) => {
-                        const cleanName = pName.toLowerCase().replace(/[\s-_]+/g, "");
-                        const match = projects.find((p) => {
-                          const pTitle = p.metadata.title.toLowerCase().replace(/[\s-_]+/g, "");
-                          const pSlug = p.metadata.slug.toLowerCase().replace(/[\s-_]+/g, "");
-                          return pTitle.includes(cleanName) || pSlug === cleanName || pSlug.includes(cleanName);
-                        });
-                        return match ? (
-                          <button
-                            key={pName}
-                            onClick={() => setSelectedSlug(match.metadata.slug)}
-                            className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer inline-flex items-center gap-0.5 border border-zinc-200/50 dark:border-zinc-700/50"
-                          >
-                            <span>{pName}</span>
-                            <ArrowUpRight className="w-2.5 h-2.5" />
-                          </button>
-                        ) : (
-                          <span
-                            key={pName}
-                            className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
-                          >
-                            {pName}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
-
-            {/* Architecture Paradigms & Engineering Principles */}
-            <section className="space-y-3 pt-2">
-              <div className="pb-1 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Architecture Paradigms &amp; Engineering Standards
-                </h3>
-                <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
-                  Production Blueprints
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                    <span>Monorepo &amp; End-to-End Type Safety</span>
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Turborepo unified workspaces, oRPC type contracts across client and server boundaries, shared UI/DB packages, and zero-drift CI/CD deployments.
-                  </p>
-                </div>
-
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                    <span>Two-Zone Split Edge Architecture</span>
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Cloudflare Workers &amp; Durable Objects edge state coordination, Supabase Hyperdrive pooling for transactional DB, and sub-250ms cold starts.
-                  </p>
-                </div>
-
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                    <span>Million-Row Sheet Virtualization</span>
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Off-thread Web Worker computation, zero-copy ArrayBuffer transfer, and TanStack Virtual rendering keeping scrolling smooth at 60 FPS.
-                  </p>
-                </div>
-
-                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                    <span>Event-Driven Microservices &amp; Telemetry</span>
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    RabbitMQ message queues, Redis caching with distributed locks, n8n webhook automation, and Arduino IoT sensor telemetry ingestion.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* Complete Technical Stack Index */}
-            <section className="space-y-3 pt-2">
-              <div className="pb-1 border-b border-zinc-200 dark:border-zinc-800">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Technical Inventory Index
-                </h3>
-              </div>
-
-              <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-3 text-xs font-mono">
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 pb-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Languages</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">TypeScript, JavaScript (ESNext), Node.js, SQL, C/C++ (Arduino), Bash, HTML5/CSS3</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 pb-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Edge &amp; Cloud</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">Cloudflare Workers, Durable Objects, Queues, Vectorize, Hyperdrive, D1, R2, Docker, AWS (EC2/S3), GCP, Linux VPS, Nginx</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 pb-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Backend &amp; APIs</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">NestJS, oRPC (Type-Safe RPC), Turborepo, RabbitMQ, Redis, Socket.io, Express, Hono, REST, GraphQL, Webhooks</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 pb-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Databases</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">PostgreSQL, Supabase, Prisma ORM, Drizzle ORM, Redis (Cluster/Locks), MongoDB</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 pb-2.5 border-b border-zinc-200/50 dark:border-zinc-800/50">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Frontend &amp; UI</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">Next.js 15 (App Router), React 19, Tailwind CSS, TanStack Virtual, Radix UI, Zustand</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                  <span className="w-32 text-zinc-400 dark:text-zinc-500 shrink-0 font-medium">Automation &amp; IoT</span>
-                  <span className="text-zinc-800 dark:text-zinc-200">n8n Workflow Automation, Arduino Microcontrollers, MQ-6 Gas, DHT11 Sensors, MQTT, MikroTik RouterOS API</span>
-                </div>
-              </div>
-            </section>
-
-            {/* Bottom Stack CTA */}
-            <section className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/20 flex items-center justify-between gap-3">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                Want to evaluate technical alignment for your engineering stack or team?
-              </div>
-              <button
-                onClick={() => navigateToTab("contact")}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shrink-0 cursor-pointer flex items-center gap-1"
-              >
-                <span>Get In Touch</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </section>
-          </div>
+          </section>
         )}
 
         {/* ============================================================== */}
