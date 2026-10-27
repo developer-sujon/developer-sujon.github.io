@@ -543,7 +543,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
           />
 
           {/* Slide-over panel */}
-          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 h-full overflow-y-auto p-6 sm:p-8 space-y-6 shadow-xl z-10">
+          <div className="relative w-full max-w-full sm:max-w-2xl lg:max-w-3xl bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 h-full overflow-y-auto p-6 sm:p-8 space-y-6 shadow-xl z-10">
             {/* Drawer Header */}
             <div className="flex items-start justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
               <div>

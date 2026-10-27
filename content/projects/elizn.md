@@ -44,6 +44,41 @@ The paramount engineering hurdle was architectural: **managing, rendering, and c
 
 ---
 
+## 🏗️ Virtualized Spreadsheet Architecture
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              ELIZN SPREADSHEET ARCHITECTURE                            │
+│                                                                                        │
+│   [User / Data Entry Operator]                                                         │
+│                │                                                                       │
+│                ▼ Real-Time Keystrokes & Cell Navigation (Sub-5ms Latency)              │
+│   ┌─────────────────────────────────────────────────────────────────┐                  │
+│   │                 Browser Main Thread (React 19 UI)               │                  │
+│   │  • Dual-Axis Virtualized Viewport (~50 rows × 15 visible cells) │                  │
+│   │  • Strict 60 FPS Scroll Render Budget (< 16ms per frame)        │                  │
+│   │  • Lightweight Event Debouncer (Zustand Undo/Redo Buffer)       │                  │
+│   └──────┬──────────────────────────────────────────────────┬───────┘                  │
+│          │                                                  │                          │
+│          ▼ Zero-Copy ArrayBuffer Transferable               ▼ Batch Cell Diff Payload  │
+│   ┌─────────────────────────────────────────┐        ┌──────────────────────────────┐  │
+│   │ Web Worker (Off-Thread Compute Engine)  │        │ Supabase Edge Functions      │  │
+│   │ • Formula Evaluator & Aggregations      │        │ • PostgreSQL Batch Insert    │  │
+│   │ • CSV / Excel Export Streaming          │        │ • Drizzle ORM Mutations      │  │
+│   │ • Hourly Productivity Variance Analysis │        │ • Time-Series Partitioning   │  │
+│   └─────────────────────────────────────────┘        └──────────────┬───────────────┘  │
+│                                                                     │                  │
+│                                                                     ▼                  │
+│                                                      ┌──────────────────────────────┐  │
+│                                                      │ PostgreSQL Database          │  │
+│                                                      │ • Tenant Time-Series Tables  │  │
+│                                                      │ • PostHog Telemetry Pipeline │  │
+│                                                      └──────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## ⚡ The Star Challenge: Millions of Data Points in 1 Sheet
 
 ### 1. The Browser Rendering Cliff
