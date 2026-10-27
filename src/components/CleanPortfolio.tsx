@@ -310,45 +310,111 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
           </section>
         )}
 
-        {/* 5. WORK EXPERIENCE */}
+        {/* 5. WORK EXPERIENCE TIMELINE */}
         {(activeTab === "overview" || activeTab === "experience") && (
-          <section className="space-y-4">
-            <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+          <section className="space-y-6">
+            <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                Work Experience
+                Work Experience &amp; Leadership
               </h2>
+              <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+                5+ Years Production
+              </span>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {experiences.map((exp, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                    <div>
-                      <h3 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                        {exp.role} · <span className="text-zinc-700 dark:text-zinc-300">{exp.company}</span>
-                      </h3>
-                      <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
-                        {exp.location}
+                <div
+                  key={idx}
+                  className="relative pl-5 sm:pl-6 border-l border-zinc-200 dark:border-zinc-800 space-y-3 pb-2 last:pb-0"
+                >
+                  {/* Subtle Timeline Node */}
+                  <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 border-2 border-[var(--bg-primary)]" />
+
+                  {/* Header: Company, Role, Period */}
+                  <div className="space-y-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                          {exp.company}
+                        </h3>
+                        <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">/</span>
+                        <span className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 font-medium">
+                          {exp.role}
+                        </span>
+                      </div>
+                      
+                      <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
+                        {exp.period}
                       </span>
                     </div>
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
-                      {exp.period}
-                    </span>
+
+                    <div className="flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+                      <span>{exp.location}</span>
+                      {exp.type && (
+                        <>
+                          <span>·</span>
+                          <span>{exp.type}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  {/* Role Summary */}
+                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
                     {exp.summary}
                   </p>
 
-                  <ul className="space-y-1 text-xs text-zinc-600 dark:text-zinc-400 pl-4 list-disc leading-relaxed">
+                  {/* Key Systems Shipped (Interactive Clickable Links) */}
+                  {exp.projectsMentioned && exp.projectsMentioned.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                      <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">Shipped:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {exp.projectsMentioned.map((projName) => {
+                          const matchingProject = projects.find(
+                            (p) =>
+                              p.metadata.title.toLowerCase().includes(projName.toLowerCase()) ||
+                              p.metadata.slug.toLowerCase().includes(projName.toLowerCase().replace(/\s+/g, "-"))
+                          );
+                          return matchingProject ? (
+                            <button
+                              key={projName}
+                              onClick={() => setSelectedSlug(matchingProject.metadata.slug)}
+                              className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer inline-flex items-center gap-1"
+                            >
+                              <span>{projName}</span>
+                              <ArrowUpRight className="w-2.5 h-2.5" />
+                            </button>
+                          ) : (
+                            <span
+                              key={projName}
+                              className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                            >
+                              {projName}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bullet Highlights with Dash */}
+                  <ul className="space-y-1.5 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed pl-3 border-l border-zinc-100 dark:border-zinc-800/60">
                     {exp.highlights.map((h, i) => (
-                      <li key={i}>{h}</li>
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-zinc-400 dark:text-zinc-500 select-none mt-0.5 text-xs">—</span>
+                        <span>{h}</span>
+                      </li>
                     ))}
                   </ul>
 
+                  {/* Full Tech Stack Pills */}
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {exp.technologies.slice(0, 6).map((t) => (
-                      <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                    {exp.technologies.map((t) => (
+                      <span
+                        key={t}
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400"
+                      >
                         {t}
                       </span>
                     ))}
@@ -358,6 +424,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
             </div>
           </section>
         )}
+
 
         {/* 6. TECHNICAL CAPABILITIES */}
         {(activeTab === "overview" || activeTab === "experience") && (

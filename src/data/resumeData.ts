@@ -140,9 +140,9 @@ export const resumeData: ResumeData = {
         "Engineered the DebounceSession Durable Object with 5s inactivity alarms, eliminating message-burst race conditions and cutting LLM token costs by 68%.",
         "Designed and deployed multilingual RAG pipeline using Cloudflare Vectorize and bge-m3 embeddings for sub-35ms semantic context retrieval.",
         "Built Eazlock IoT asynchronous pending command consumers (DevicePendingCommandProcessor), guaranteeing zero dropped commands for offline devices upon reconnection.",
-        "Developed Torongo Pay payment gateway abstraction with idempotent request hashing and cryptographic webhook signature validation.",
+        "Architected Torongo cloud-native MikroTik hotspot billing & voucher platform using oRPC on Cloudflare Workers, Hyperdrive DB pooling, automated captive portal recharges, and RouterOS API sync.",
       ],
-      projectsMentioned: ["Zotlyx", "Eazlock", "Torongo Pay"],
+      projectsMentioned: ["Zotlyx", "Eazlock", "Torongo"],
       technologies: [
         "Cloudflare Workers",
         "Durable Objects",
