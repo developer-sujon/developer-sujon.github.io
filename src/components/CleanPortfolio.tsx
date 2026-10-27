@@ -24,7 +24,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 
-export type SectionTab = "overview" | "projects" | "experience" | "capabilities" | "contact";
+export type SectionTab = "overview" | "projects" | "experience" | "contact";
 export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT" | "Open Source";
 
 interface CleanPortfolioProps {
@@ -229,7 +229,6 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
             { id: "overview", label: "Overview" },
             { id: "projects", label: "Projects" },
             { id: "experience", label: "Experience" },
-            { id: "capabilities", label: "Capabilities" },
             { id: "contact", label: "Contact" },
           ].map((tab) => (
             <button
@@ -407,10 +406,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   Core Engineering Domains
                 </h2>
                 <button
-                  onClick={() => navigateToTab("capabilities")}
+                  onClick={() => navigateToTab("experience")}
                   className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer"
                 >
-                  <span>All Capabilities</span>
+                  <span>Career Experience</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
@@ -741,49 +740,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: CAPABILITIES                                           */}
-        {/* ============================================================== */}
-        {activeTab === "capabilities" && (
-          <section className="space-y-6">
-            <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                Technical Capabilities
-              </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Core technologies, runtimes, and engineering tooling used across production platforms.
-              </p>
-            </div>
-
-            <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-              {skillCategories.map((cat, i) => (
-                <div
-                  key={i}
-                  className="py-4 sm:py-5 flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 first:pt-1 last:pb-0"
-                >
-                  <div className="w-full sm:w-48 shrink-0">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-mono">
-                      {cat.title}
-                    </h3>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    {cat.skills.map((s, si) => (
-                      <span
-                        key={si}
-                        className="px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800/70 text-zinc-800 dark:text-zinc-200 text-xs font-mono border border-zinc-200/60 dark:border-zinc-700/50 hover:border-zinc-400 dark:hover:border-zinc-500 hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60 transition-colors cursor-default"
-                      >
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ============================================================== */}
-        {/* TAB 5: CONTACT (Direct Message & Channels)                      */}
+        {/* TAB 4: CONTACT (Direct Message)                                */}
         {/* ============================================================== */}
         {activeTab === "contact" && (
           <div className="space-y-8">
@@ -830,30 +787,6 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               )}
             </section>
 
-            {/* Channels & Availability Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1.5">
-                <div className="text-xs font-mono text-zinc-400 dark:text-zinc-500 uppercase">WhatsApp (Direct)</div>
-                <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  <a href="https://wa.me/8801772703036" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
-                    <WhatsAppIcon className="w-4 h-4 text-emerald-500" />
-                    <span>{profile.phone}</span>
-                  </a>
-                </div>
-                <div className="text-[11px] text-zinc-500">Fastest response for urgent architecture consultations.</div>
-              </div>
-
-              <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1.5">
-                <div className="text-xs font-mono text-zinc-400 dark:text-zinc-500 uppercase">Direct Email</div>
-                <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  <button onClick={copyEmail} className="hover:underline flex items-center gap-1.5 cursor-pointer">
-                    <Mail className="w-4 h-4 text-zinc-400" />
-                    <span>{emailCopied ? "Copied!" : profile.email}</span>
-                  </button>
-                </div>
-                <div className="text-[11px] text-zinc-500">Checked daily. Official offers &amp; NDAs.</div>
-              </div>
-            </div>
           </div>
         )}
 
