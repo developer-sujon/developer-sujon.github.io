@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
-import { GithubIcon, LinkedinIcon } from "./icons";
+import { GithubIcon, LinkedinIcon, WhatsAppIcon } from "./icons";
 import { 
   Sun, 
   Moon, 
@@ -164,13 +164,15 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               <span>{emailCopied ? "Email copied!" : profile.email}</span>
             </button>
 
-            <button
-              onClick={copyPhone}
-              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer flex items-center gap-1.5"
+            <a
+              href="https://wa.me/8801772703036"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5"
             >
-              <Phone className="w-3.5 h-3.5" />
-              <span>{phoneCopied ? "Phone copied!" : profile.phone}</span>
-            </button>
+              <WhatsAppIcon className="w-3.5 h-3.5" />
+              <span>{profile.phone}</span>
+            </a>
 
             <a
               href={profile.github}
@@ -524,6 +526,9 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </a>
               <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
                 LinkedIn
+              </a>
+              <a href="https://wa.me/8801772703036" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+                WhatsApp
               </a>
               <a href={`mailto:${profile.email}`} className="hover:text-zinc-900 dark:hover:text-zinc-100">
                 Email
