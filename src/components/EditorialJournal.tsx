@@ -151,15 +151,17 @@ export function EditorialJournal({ projects }: EditorialJournalProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Print PDF Button */}
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-1)] transition-colors cursor-pointer"
-            title="Print or Save Editorial Journal as PDF"
+          {/* Download Authentic CV PDF */}
+          <a
+            href="/Muhammad-Sujon-CV.pdf"
+            download="Muhammad-Sujon-CV.pdf"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-1)] transition-colors cursor-pointer text-xs"
+            title="Download Official CV PDF"
           >
             <Printer className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">Print / PDF</span>
-          </button>
+            <span className="hidden sm:inline">Download CV (PDF)</span>
+            <span className="sm:hidden">CV</span>
+          </a>
 
           {/* Theme Toggle Button */}
           <button
