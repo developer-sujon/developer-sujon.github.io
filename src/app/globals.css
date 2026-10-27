@@ -1,121 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --surface-2: #ffffff;
-  --surface-1: #f7f6f2;
-  --text-primary: #1a1918;
-  --text-secondary: #5c5a55;
-  --text-muted: #85837d;
-  --border: rgba(26, 25, 24, 0.12);
-  --border-strong: rgba(26, 25, 24, 0.26);
-  --border-stronger: rgba(26, 25, 24, 0.5);
-  --bg-accent: #eaf2fb;
-  --text-accent: #1660a5;
-  --fill-accent: #3284db;
-  --border-accent: #86b8eb;
-  --fill-primary: #1a1918;
-  --on-primary: #ffffff;
-  --bg-success: #eaf3de;
-  --text-success: #366c0e;
-  --font-serif: var(--font-newsreader), ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-muted: #e4e4e7;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --border: #e4e4e7;
+  --border-subtle: #f4f4f5;
+  --accent: #0284c7;
+  --accent-glow: rgba(2, 132, 199, 0.1);
+  --tag-bg: #f4f4f5;
+  --tag-text: #27272a;
 }
 
 html.dark {
-  --surface-2: #161514;
-  --surface-1: #21201e;
-  --text-primary: #f2efe9;
-  --text-secondary: #b2afa6;
-  --text-muted: #85837d;
-  --border: rgba(242, 239, 233, 0.13);
-  --border-strong: rgba(242, 239, 233, 0.25);
-  --border-stronger: rgba(242, 239, 233, 0.45);
-  --bg-accent: rgba(55, 138, 221, 0.18);
-  --text-accent: #84bbf5;
-  --fill-accent: #378add;
-  --border-accent: #378add;
-  --fill-primary: #f2efe9;
-  --on-primary: #161514;
-  --bg-success: rgba(99, 153, 34, 0.2);
-  --text-success: #9ad059;
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0c;
+  --bg-muted: #18181b;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border: #27272a;
+  --border-subtle: #18181b;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.1);
+  --tag-bg: #18181b;
+  --tag-text: #d4d4d8;
 }
 
 body {
-  background-color: var(--surface-2);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-.font-editorial {
-  font-family: var(--font-serif);
-}
-
-.font-code {
-  font-family: var(--font-mono);
-}
-
-/* Drop Cap for journalistic prose */
-.drop-cap:first-letter {
-  float: left;
-  font-size: 56px;
-  line-height: 0.85;
-  padding: 5px 9px 0 0;
-  font-weight: 500;
-  font-family: var(--font-serif);
-  color: var(--text-primary);
-}
-
-/* Editorial Pull Quote */
-.pull-quote {
-  border-top: 2px solid var(--text-primary);
-  border-bottom: 0.5px solid var(--border);
-  padding: 18px 0;
-  margin: 24px 0;
-  font-family: var(--font-serif);
-  font-size: 22px;
-  line-height: 1.45;
-  letter-spacing: -0.2px;
-  color: var(--text-primary);
-  font-style: italic;
-}
-
-/* Blinking live ticker dot */
-@keyframes blinkDot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.25; }
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text-success);
-  display: inline-block;
-  margin-right: 6px;
-  animation: blinkDot 2s infinite ease-in-out;
-}
-
-/* Custom Scrollbar */
+/* Custom subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: var(--border);
   border-radius: 3px;
 }
 
-/* Markdown prose styling */
+/* Clean markdown formatting */
 .markdown-body {
   color: var(--text-secondary);
-  line-height: 1.85;
-  font-size: 15px;
+  line-height: 1.75;
+  font-size: 0.9375rem;
 }
 
 .markdown-body h1,
@@ -123,52 +64,51 @@ body {
 .markdown-body h3,
 .markdown-body h4 {
   color: var(--text-primary);
-  font-family: var(--font-serif);
   font-weight: 600;
   letter-spacing: -0.02em;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.markdown-body h1 { font-size: 1.85rem; }
-.markdown-body h2 { font-size: 1.45rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
-.markdown-body h3 { font-size: 1.2rem; }
+.markdown-body h1 { font-size: 1.5rem; }
+.markdown-body h2 { font-size: 1.25rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.3rem; }
+.markdown-body h3 { font-size: 1.05rem; }
 
 .markdown-body p {
-  margin-bottom: 1.15rem;
+  margin-bottom: 1rem;
 }
 
 .markdown-body ul,
 .markdown-body ol {
-  margin-bottom: 1.15rem;
-  padding-left: 1.4rem;
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
 }
 
-.markdown-body ul { list-style-type: square; }
+.markdown-body ul { list-style-type: disc; }
 .markdown-body ol { list-style-type: decimal; }
-.markdown-body li { margin-bottom: 0.35rem; }
+.markdown-body li { margin-bottom: 0.3rem; }
 
 .markdown-body code {
-  background: var(--surface-1);
-  color: var(--text-accent);
-  padding: 0.15rem 0.4rem;
+  background: var(--tag-bg);
+  color: var(--text-primary);
+  padding: 0.15rem 0.35rem;
   border-radius: 0.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.88em;
-  border: 0.5px solid var(--border);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.85em;
+  border: 1px solid var(--border);
 }
 
 .markdown-body pre {
-  background: #0d0c0b !important;
-  color: #f2efe9;
-  padding: 1.1rem;
+  background: #09090b !important;
+  color: #f4f4f5;
+  padding: 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
-  border: 1px solid var(--border);
-  margin-bottom: 1.25rem;
-  font-family: var(--font-mono);
+  border: 1px solid #27272a;
+  margin-bottom: 1rem;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.82rem;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 .markdown-body pre code {
@@ -181,38 +121,32 @@ body {
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.25rem 0;
-  font-size: 0.88rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
 }
 
 .markdown-body th,
 .markdown-body td {
-  padding: 0.6rem 0.8rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--border);
   text-align: left;
 }
 
 .markdown-body th {
-  background: var(--surface-1);
+  background: var(--bg-secondary);
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
-.markdown-body hr {
-  border: 0;
-  border-top: 1px solid var(--border);
-  margin: 2rem 0;
-}
-
-/* PRINT MEDIA */
+/* Print styling */
 @media print {
   @page {
-    margin: 12mm 15mm;
+    margin: 10mm 12mm;
     size: A4 portrait;
   }
   body {
     background: #ffffff !important;
-    color: #111827 !important;
+    color: #000000 !important;
   }
   .no-print,
   button,
