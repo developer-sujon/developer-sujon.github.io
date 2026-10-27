@@ -342,11 +342,5 @@ export const resumeData: ResumeData = {
       period: "Technical Education",
       details: "Comprehensive coursework in Data Structures, Algorithms, Microservices, and Computer Networks.",
     },
-    {
-      degree: "Secondary School Certificate (SSC)",
-      institution: "Amjhupi Secondary School",
-      period: "Passing Year: 2018",
-      details: "GPA: 3.87",
-    },
   ],
 };

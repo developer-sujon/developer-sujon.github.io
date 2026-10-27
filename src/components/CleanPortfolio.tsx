@@ -926,17 +926,9 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
           </div>
         )}
 
-        {/* 8. ACADEMIC & FOOTER */}
-        <footer className="pt-8 border-t border-zinc-200 dark:border-zinc-800 space-y-5 text-xs text-zinc-500 dark:text-zinc-400">
-          <div className="space-y-1">
-            <div className="font-mono uppercase text-zinc-400 dark:text-zinc-500 text-[11px]">Academic Background</div>
-            <div className="text-zinc-900 dark:text-zinc-100 font-medium">
-              {education[0].degree}
-            </div>
-            <div>{education[0].institution} · {education[0].period}</div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800 font-mono text-[11px]">
+        {/* 8. FOOTER */}
+        <footer className="pt-8 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[11px]">
             <div>© 2026 {profile.name} · {profile.location}</div>
             <div className="flex items-center gap-3">
               <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
