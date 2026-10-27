@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
-import { GithubIcon, LinkedinIcon, WhatsAppIcon, VerifiedBadgeIcon } from "./icons";
+import { GithubIcon, LinkedinIcon, WhatsAppIcon, VerifiedBadgeIcon, MediumIcon } from "./icons";
 import { 
   Sun, 
   Moon, 
   Download, 
   Mail, 
   ArrowUpRight, 
-  ArrowRight,
-  ArrowLeft,
+  ArrowRight, 
+  ArrowLeft, 
   X, 
   MapPin, 
   Send,
@@ -18,6 +18,7 @@ import {
   Layers,
   Sparkles,
   ExternalLink,
+  BookOpen,
   Cpu,
   Server,
   Database,
@@ -25,7 +26,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 
-export type SectionTab = "overview" | "projects" | "experience" | "contact";
+export type SectionTab = "overview" | "projects" | "articles" | "experience" | "contact";
 export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT" | "Open Source";
 
 interface CleanPortfolioProps {
@@ -47,7 +48,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   const [letterSent, setLetterSent] = useState(false);
   const readerRef = useRef<HTMLDivElement>(null);
 
-  const { profile, experiences, metrics, skillCategories, education } = resumeData;
+  const { profile, experiences, metrics, skillCategories, education, articles } = resumeData;
 
   useEffect(() => {
     // Sync with system theme initialized by layout head script
@@ -265,6 +266,16 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               <LinkedinIcon className="w-3.5 h-3.5" />
               <span>LinkedIn ↗</span>
             </a>
+
+            <a
+              href={profile.medium || "https://medium.com/@muhammad-sujon"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
+            >
+              <MediumIcon className="w-3.5 h-3.5" />
+              <span>Medium ↗</span>
+            </a>
           </div>
         </header>
 
@@ -273,6 +284,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
           {[
             { id: "overview", label: "Overview" },
             { id: "projects", label: "Projects" },
+            { id: "articles", label: `Articles (${articles.length})` },
             { id: "experience", label: "Experience" },
             { id: "contact", label: "Contact" },
           ].map((tab) => (
@@ -424,7 +436,54 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </div>
             </section>
 
-            {/* 5. Contact CTA */}
+            {/* 5. Articles & Writing Preview */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Articles &amp; Writing
+                </h2>
+                <button
+                  onClick={() => navigateToTab("articles")}
+                  className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <span>All Articles ({articles.length})</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {articles.slice(0, 3).map((art) => (
+                  <a
+                    key={art.slug}
+                    href={art.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/20 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all flex items-start justify-between gap-3 block"
+                  >
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
+                        <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                          {art.publication || "Medium"}
+                        </span>
+                        <span>·</span>
+                        <span>{art.publishedAt}</span>
+                        <span>·</span>
+                        <span>{art.readTime}</span>
+                      </div>
+                      <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1">
+                        {art.title}
+                      </h3>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-1 font-normal">
+                        {art.description}
+                      </p>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 shrink-0 mt-0.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            {/* 6. Contact CTA */}
             <section className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <p className="text-zinc-500 dark:text-zinc-400">
                 Open to senior engineering roles, architecture consulting, and advisory.
@@ -547,7 +606,87 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 3: EXPERIENCE (Work History Timeline & Education Only)     */}
+        {/* TAB 3: ARTICLES (Medium Articles & Technical Writing)          */}
+        {/* ============================================================== */}
+        {activeTab === "articles" && (
+          <section className="space-y-6">
+            <div className="space-y-2 pb-2 border-b border-zinc-200 dark:border-zinc-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                    Articles &amp; Publications ({articles.length})
+                  </h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Engineering deep-dives into NestJS architecture patterns, networking internals, and distributed systems.
+                  </p>
+                </div>
+
+                <a
+                  href={profile.medium || "https://medium.com/@muhammad-sujon"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors w-fit shrink-0 cursor-pointer"
+                >
+                  <MediumIcon className="w-3.5 h-3.5" />
+                  <span>Follow on Medium</span>
+                  <ExternalLink className="w-3 h-3 text-zinc-400" />
+                </a>
+              </div>
+            </div>
+
+            <div className="space-y-3.5">
+              {articles.map((art) => (
+                <a
+                  key={art.slug}
+                  href={art.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block p-4 sm:p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/20 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer space-y-2.5"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
+                        <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium">
+                          {art.publication || "Medium"}
+                        </span>
+                        <span>·</span>
+                        <span>{art.publishedAt}</span>
+                        <span>·</span>
+                        <span>{art.readTime}</span>
+                      </div>
+
+                      <h3 className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                        {art.title}
+                      </h3>
+                    </div>
+
+                    <div className="w-7 h-7 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 group-hover:border-zinc-400 dark:group-hover:border-zinc-600 shrink-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
+                    {art.description}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {art.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 4: EXPERIENCE (Work History Timeline & Education Only)     */}
         {/* ============================================================== */}
         {activeTab === "experience" && (
           <div className="space-y-12">

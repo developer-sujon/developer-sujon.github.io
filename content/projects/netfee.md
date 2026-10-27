@@ -18,7 +18,7 @@ metrics:
     sub: "Self-service recharges & disconnects"
   - label: "Backend"
     value: "Nest.js"
-    sub: "PostgreSQL & Redis cache"
+    sub: "MongoDB & Redis cache"
   - label: "Alerts"
     value: "BullMQ"
     sub: "Scheduled SMS reminders with retries"
@@ -26,7 +26,8 @@ tags:
   - "Nest.js"
   - "React"
   - "Node.js"
-  - "PostgreSQL"
+  - "MongoDB"
+  - "Mongoose"
   - "MikroTik RouterOS API"
   - "Redis"
   - "BullMQ"
@@ -84,7 +85,7 @@ Managing hundreds of client routers with thousands of subscribers requires relia
 | :--- | :--- | :--- |
 | **Backend** | NestJS, TypeScript, Node.js | Modular business logic, subscriber auth, and API routes. |
 | **Networking** | MikroTik RouterOS API, TCP Sockets | Direct router management for PPPoE and Hotspot users. |
-| **Database** | PostgreSQL, Redis | Subscriber records, invoices, and session caching. |
+| **Database** | MongoDB, Mongoose, Redis | Subscriber records, invoices, and session caching. |
 | **Queues** | BullMQ | Rate-limited router commands and staged SMS alerts. |
 | **Frontend** | React, Tailwind CSS | Admin dashboard, cashier portal, and customer payment page. |
 

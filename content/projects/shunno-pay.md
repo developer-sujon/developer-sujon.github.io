@@ -14,7 +14,7 @@ metrics:
     value: "HMAC SHA-256"
     sub: "Timing-safe raw buffer verification"
   - label: "Transactions"
-    value: "Prisma ACID"
+    value: "MongoDB Sessions"
     sub: "Atomic wallet & ledger commits"
   - label: "Queue Engine"
     value: "BullMQ"
@@ -24,9 +24,9 @@ metrics:
     sub: "Automated wallet integrations"
 tags:
   - "Express.js"
-  - "PostgreSQL"
-  - "Prisma"
   - "Node.js"
+  - "MongoDB"
+  - "Mongoose"
   - "Redis"
   - "BullMQ"
   - "HMAC SHA-256"
@@ -46,8 +46,8 @@ The primary technical goal was reliability: ensuring incoming payment webhooks a
 Handling money transactions requires zero-trust security and atomic database writes:
 
 * **Timing-Safe Signature Verification:** Inbound webhook payloads from payment providers are checked against their raw byte buffers using HMAC SHA-256 with timing-safe comparison to prevent forged callbacks.
-* **Idempotency Barriers:** Each transaction has a unique provider reference. If a mobile money provider retries sending a webhook due to a slow internet connection, our system detects the duplicate in Redis/PostgreSQL and ignores the second attempt.
-* **Atomic Ledger Updates:** Customer wallet credits and accounting entries run inside interactive Prisma `$transaction` blocks. Either both the customer balance and invoice record update successfully, or the entire transaction rolls back cleanly.
+* **Idempotency Barriers:** Each transaction has a unique provider reference. If a mobile money provider retries sending a webhook due to a slow internet connection, our system detects the duplicate in Redis/MongoDB and ignores the second attempt.
+* **Atomic Ledger Updates:** Customer wallet credits and accounting entries run inside MongoDB multi-document session transactions (`$session`). Either both the customer balance and invoice record update successfully, or the entire transaction rolls back cleanly.
 * **Reliable Outbound Callbacks:** Once a payment is confirmed, the notification to the merchant store is queued via **BullMQ** with exponential backoff retries, ensuring the merchant system receives the confirmation even if their server is temporarily restarting.
 
 ---
@@ -81,7 +81,7 @@ Handling money transactions requires zero-trust security and atomic database wri
 | :--- | :--- | :--- |
 | **Backend API** | Node.js, Express.js | Inbound webhook endpoints and merchant settlement APIs. |
 | **Security** | Crypto, HMAC SHA-256 | Timing-safe signature checks on raw byte buffers. |
-| **Database** | PostgreSQL, Prisma ORM | Transaction ledgers, merchant accounts, and payment history. |
+| **Database** | MongoDB, Mongoose | Transaction ledgers, merchant accounts, and payment history. |
 | **Queues & Cache** | Redis, BullMQ | Idempotency locks and outbound callback retries. |
 | **DevOps** | Docker, Nginx | Containerized microservice deployment on Linux VPS. |
 

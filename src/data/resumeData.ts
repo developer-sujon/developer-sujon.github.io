@@ -35,6 +35,17 @@ export interface ExperienceItem {
   technologies: string[];
 }
 
+export interface ArticleItem {
+  title: string;
+  slug: string;
+  url: string;
+  publishedAt: string;
+  readTime: string;
+  description: string;
+  tags: string[];
+  publication?: string;
+}
+
 export interface SkillCategory {
   title: string;
   icon: string;
@@ -56,6 +67,7 @@ export interface ResumeData {
     github: string;
     githubUsername: string;
     linkedin: string;
+    medium: string;
     website: string;
     avatarUrl: string;
     status: string;
@@ -68,6 +80,7 @@ export interface ResumeData {
   metrics: MetricItem[];
   experiences: ExperienceItem[];
   skillCategories: SkillCategory[];
+  articles: ArticleItem[];
   education: {
     degree: string;
     institution: string;
@@ -90,6 +103,7 @@ export const resumeData: ResumeData = {
     github: "https://github.com/developer-sujon",
     githubUsername: "developer-sujon",
     linkedin: "https://www.linkedin.com/in/muhammadsujon",
+    medium: "https://medium.com/@muhammad-sujon",
     website: "https://devsujon.com",
     avatarUrl: "/sujon-avatar.png",
     status: "Available for Senior Roles & Architecture Consulting",
@@ -202,9 +216,9 @@ export const resumeData: ResumeData = {
       location: "Rajshahi, Bangladesh · On-site",
       period: "Dec 2022 – Jun 2025",
       type: "Full-time",
-      summary: "Developed full-stack SaaS applications, retail inventory systems, ISP billing platforms, and internal financial services using NestJS, React, and PostgreSQL.",
+      summary: "Developed full-stack SaaS applications, retail inventory systems, ISP billing platforms, and internal financial services using React, NestJS, Node.js, and MongoDB.",
       highlights: [
-        "Built and maintained full-stack production platforms using React, Node.js, NestJS, Express, and PostgreSQL",
+        "Built and maintained full-stack production platforms using React, Node.js, NestJS, Express, and MongoDB",
         "Engineered multi-store inventory synchronization and double-entry accounting ledgers for Hisabnikash",
         "Connected NetFee billing software directly to physical MikroTik routers using RouterOS API sockets",
         "Built real-time agent presence and live notification updates using Socket.io and Redis",
@@ -213,13 +227,12 @@ export const resumeData: ResumeData = {
       ],
       projectsMentioned: ["Hisabnikash", "NetFee", "SupportTicket", "Shunno Pay", "Shunno Storage"],
       technologies: [
+        "React",
         "NestJS",
         "Node.js",
-        "React",
-        "TypeScript",
-        "PostgreSQL",
         "MongoDB",
-        "Prisma",
+        "Mongoose",
+        "TypeScript",
         "MikroTik RouterOS API",
         "RabbitMQ",
         "Redis",
@@ -341,6 +354,68 @@ export const resumeData: ResumeData = {
       institution: "Meherpur College of Engineering and Technology",
       period: "Technical Education",
       details: "Comprehensive coursework in Data Structures, Algorithms, Software Engineering, and Computer Networks.",
+    },
+  ],
+  articles: [
+    {
+      title: "Building Scalable NestJS Applications: 4 Architecture Patterns That Actually Work",
+      slug: "scalable-nestjs-architecture",
+      url: "https://medium.com/@muhammad-sujon/building-scalable-nestjs-applications-4-architecture-patterns-that-actually-work-065f4068c103",
+      publishedAt: "Dec 2025",
+      readTime: "12 min read",
+      description: "A comprehensive deep-dive into solving tight coupling, circular dependencies, and testing complexity in NestJS using Direct DB Access, Use-Case Pattern, Contract-Based interfaces, and Event-Driven architecture.",
+      tags: ["NestJS", "TypeScript", "Clean Code", "Architecture"],
+      publication: "Medium",
+    },
+    {
+      title: "Repeater (রিপিটার) আসলে কী এবং কীভাবে কাজ করে?",
+      slug: "repeater-guide",
+      url: "https://medium.com/@muhammad-sujon/repeater-%E0%A6%B0%E0%A6%BF%E0%A6%AA%E0%A6%BF%E0%A6%9F%E0%A6%BE%E0%A6%B0-%E0%A6%86%E0%A6%B8%E0%A6%B2%E0%A7%87-%E0%A6%95%E0%A7%80-%E0%A6%8F%E0%A6%AC%E0%A6%82-%E0%A6%95%E0%A7%80%E0%A6%AD%E0%A6%BE%E0%A6%AC%E0%A7%87-%E0%A6%95%E0%A6%BE%E0%A6%9C-%E0%A6%95%E0%A6%B0%E0%A7%87-ecdb8d40d9cb",
+      publishedAt: "Aug 2026",
+      readTime: "4 min read",
+      description: "দূরত্বের কারণে ক্যাবলে নেটওয়ার্ক সিগন্যাল যখন দুর্বল (Attenuation) হয়ে পড়ে, তখন রিপিটার কীভাবে সিগন্যাল রিফ্রেশ ও অ্যাম্প্লিফাই করে কিলোমিটারের পর কিলোমিটার পৌঁছে দেয়।",
+      tags: ["Networking", "Hardware", "Basic Internet"],
+      publication: "Medium",
+    },
+    {
+      title: "নেটওয়ার্ক (Network) আসলে কী?",
+      slug: "network-fundamentals",
+      url: "https://medium.com/@muhammad-sujon/%E0%A6%A8%E0%A7%87%E0%A6%9F%E0%A6%93%E0%A7%9F%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%95-network-%E0%A6%86%E0%A6%B8%E0%A6%B2%E0%A7%87-%E0%A6%95%E0%A7%80-27de91cac208",
+      publishedAt: "Aug 2026",
+      readTime: "3 min read",
+      description: "এক ডিভাইস থেকে আরেক ডিভাইসে ডেটা বা ট্রাফিক পারাপারের পথ, লজিক্যাল গ্রুপিং এবং নেটওয়ার্ক জ্যাম এড়াতে সাবনেটের (Subnets) গুরুত্ব ও কার্যপ্রণালী।",
+      tags: ["Networking", "Subnets", "Computer Science"],
+      publication: "Medium",
+    },
+    {
+      title: "ইন্টারনেটের ডিজিটাল ঠিকানা: IP Address আসলে কী এবং কীভাবে কাজ করে?",
+      slug: "ip-address-basics",
+      url: "https://medium.com/@muhammad-sujon/%E0%A6%87%E0%A6%A8%E0%A7%8D%E0%A6%9F%E0%A6%BE%E0%A6%B0%E0%A6%A8%E0%A7%87%E0%A6%9F%E0%A7%87%E0%A6%B0-%E0%A6%A1%E0%A6%BF%E0%A6%9C%E0%A6%BF%E0%A6%9F%E0%A6%BE%E0%A6%B2-%E0%A6%A0%E0%A6%BF%E0%A6%95%E0%A6%BE%E0%A6%A8%E0%A6%BE-ip-address-%E0%A6%86%E0%A6%B8%E0%A6%B2%E0%A7%87-%E0%A6%95%E0%A7%80-%E0%A6%8F%E0%A6%AC%E0%A6%82-%E0%A6%95%E0%A7%80%E0%A6%AD%E0%A6%BE%E0%A6%AC%E0%A7%87-%E0%A6%95%E0%A6%BE%E0%A6%9C-%E0%A6%95%E0%A6%B0%E0%A7%87-8df83f2f3a97",
+      publishedAt: "Aug 2026",
+      readTime: "5 min read",
+      description: "৩২-বিট IPv4 অকটেটের গঠন, Public IP বনাম Private IP এর কাজ, ডেটা প্যাকেটে Source ও Destination IP এবং IPv6 ও DNS কীভাবে কাজ করে।",
+      tags: ["IP Address", "IPv4", "IPv6", "DNS"],
+      publication: "Medium",
+    },
+    {
+      title: "ইন্টারনেট কীভাবে কাজ করে? সহজ ভাষায় বুঝুন নেটওয়ার্কিংয়ের আসল হিরো ‘Host’ কে!",
+      slug: "understanding-network-host",
+      url: "https://medium.com/@muhammad-sujon/%E0%A6%87%E0%A6%A8%E0%A7%8D%E0%A6%9F%E0%A6%BE%E0%A6%B0%E0%A6%A8%E0%A7%87%E0%A6%9F-%E0%A6%95%E0%A7%80%E0%A6%AD%E0%A6%BE%E0%A6%AC%E0%A7%87-%E0%A6%95%E0%A6%BE%E0%A6%9C-%E0%A6%95%E0%A6%B0%E0%A7%87-%E0%A6%B8%E0%A6%B9%E0%A6%9C-%E0%A6%AD%E0%A6%BE%E0%A6%B7%E0%A6%BE%E0%A7%9F-%E0%A6%AC%E0%A7%81%E0%A6%9D%E0%A7%81%E0%A6%A8-%E0%A6%A8%E0%A7%87%E0%A6%9F%E0%A6%93%E0%A7%9F%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%95%E0%A6%BF%E0%A6%82%E0%A7%9F%E0%A7%87%E0%A6%B0-%E0%A6%86%E0%A6%B8%E0%A6%B2-%E0%A6%B9%E0%A6%BF%E0%A6%B0%E0%A7%8B-host-%E0%A6%95%E0%A7%87-b734588b87ed",
+      publishedAt: "Aug 2026",
+      readTime: "4 min read",
+      description: "সহজ রেস্তোরাঁর রূপক দিয়ে ক্লায়েন্ট ও সার্ভারের সম্পর্ক, একটি ডিভাইস কীভাবে হোস্ট হিসেবে গণ্য হয়, এবং রাউটার ও হোস্টের মধ্যে বাস্তব পার্থক্য।",
+      tags: ["Networking", "Client-Server", "Internet"],
+      publication: "Medium",
+    },
+    {
+      title: "কম্পিউটার কীভাবে কাজ করে? র‍্যাম, প্রসেসর আর ১০০ জিবি মুভির পেছনের আসল গল্প!",
+      slug: "how-computers-work-ram-cpu",
+      url: "https://medium.com/@muhammad-sujon/%EF%B8%8F-%E0%A6%95%E0%A6%AE%E0%A7%8D%E0%A6%AA%E0%A6%BF%E0%A6%89%E0%A6%9F%E0%A6%BE%E0%A6%B0-%E0%A6%95%E0%A7%80%E0%A6%AD%E0%A6%BE%E0%A6%AC%E0%A7%87-%E0%A6%95%E0%A6%BE%E0%A6%9C-%E0%A6%95%E0%A6%B0%E0%A7%87-%E0%A6%B0-%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%AE-%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%B8%E0%A7%87%E0%A6%B8%E0%A6%B0-%E0%A6%86%E0%A6%B0-%E0%A7%A7%E0%A7%A6%E0%A7%A6-%E0%A6%9C%E0%A6%BF%E0%A6%AC%E0%A6%BF-%E0%A6%AE%E0%A7%81%E0%A6%AD%E0%A6%BF%E0%A6%B0-%E0%A6%AA%E0%A7%87%E0%A6%9B%E0%A6%A8%E0%A7%87%E0%A6%B0-%E0%A6%86%E0%A6%B8%E0%A6%B2-%E0%A6%97%E0%A6%B2%E0%A7%8D%E0%A6%AA-f8a1d992b3b5",
+      publishedAt: "Aug 2026",
+      readTime: "6 min read",
+      description: "বিট ও বাইটের মেমরি অ্যাড্রেসিং, ৩২-বিট আর্কিটেকচারের ৪ জিবি র‍্যামের হার্ডওয়্যার সীমাবদ্ধতা বনাম ৬৪-বিট প্রসেসর, এবং র‍্যাম ও এসএসডি স্টোরেজের কাজের পার্থক্য।",
+      tags: ["Computer Science", "RAM", "CPU"],
+      publication: "Medium",
     },
   ],
 };

@@ -27,8 +27,8 @@ tags:
   - "React"
   - "TypeScript"
   - "Node.js"
-  - "PostgreSQL"
   - "MongoDB"
+  - "Mongoose"
   - "Redis"
   - "BullMQ"
   - "SMS Gateway"
@@ -60,7 +60,7 @@ Retail inventory and financial ledgers require high data accuracy so that stock 
 ### 1. Accurate Multi-Branch Stock Tracking
 * **Problem:** In busy retail stores, two cashiers at different branches could sell the same item or product variant simultaneously if stock updates are delayed, leading to negative stock counts.
 * **Solution:**
-  * Used database-level transactions and row-level checks on checkout.
+  * Used MongoDB multi-document session transactions with atomic `$inc` checks on checkout.
   * Stock updates and cashier receipts commit together atomically. If an item runs out of stock mid-transaction, the cashier interface informs the user immediately instead of creating inventory errors.
 
 ### 2. Flexible Customer Installment (EMI) Scheduling
@@ -83,7 +83,7 @@ Retail inventory and financial ledgers require high data accuracy so that stock 
 | Layer | Tools | What it does |
 | :--- | :--- | :--- |
 | **Backend** | NestJS, TypeScript, Node.js | Modular business logic, REST APIs, and auth middleware. |
-| **Databases** | PostgreSQL, MongoDB | Relational financial ledger, sales receipts, and product catalogs. |
+| **Database** | MongoDB, Mongoose | Double-entry journal ledgers, sales receipts, customer records, and product catalogs. |
 | **Background Jobs** | BullMQ, Redis | Scheduled installment checks, automated SMS dispatches, and reports. |
 | **Frontend** | React, Tailwind CSS | Fast point-of-sale (POS) cashier interface and admin dashboards. |
 | **DevOps** | Docker, Linux VPS, Nginx | Containerized microservices, reverse proxying, and SSL setup. |
