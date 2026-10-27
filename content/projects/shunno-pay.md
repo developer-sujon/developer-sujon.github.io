@@ -1,7 +1,7 @@
 ---
-title: "Shunno Pay — Webhook-Based Payment Gateway SaaS"
+title: "Shunno Pay — Webhook-Based Payment Gateway"
 slug: "shunno-pay"
-tagline: "High-concurrency webhook-based payment orchestration gateway facilitating automated settlements, HMAC signatures, and merchant callbacks"
+tagline: "Webhook-based payment orchestration service connecting mobile financial wallets, automated settlements, and secure merchant callbacks"
 company: "Shunno IT"
 kicker: "FinTech & Payment Orchestration · Shunno IT"
 role: "Junior Software Engineer"
@@ -10,18 +10,18 @@ status: "Production (Internal)"
 featured: false
 badge: "Internal Platform"
 metrics:
-  - label: "Webhook Ingestion"
-    value: "< 18ms"
-    sub: "Async HMAC verification"
-  - label: "Reconciliation"
-    value: "100% Automated"
-    sub: "Zero manual intervention"
-  - label: "Ledger Accuracy"
-    value: "Zero Drift"
-    sub: "Prisma ACID transactions"
-  - label: "Retry Success"
-    value: "99.7%"
-    sub: "Exponential backoff DLQ"
+  - label: "Security"
+    value: "HMAC SHA-256"
+    sub: "Timing-safe raw buffer verification"
+  - label: "Transactions"
+    value: "Prisma ACID"
+    sub: "Atomic wallet & ledger commits"
+  - label: "Queue Engine"
+    value: "BullMQ"
+    sub: "Exponential backoff retries"
+  - label: "Payment Rails"
+    value: "bKash & Nagad"
+    sub: "Automated wallet integrations"
 tags:
   - "Express.js"
   - "PostgreSQL"
@@ -35,71 +35,60 @@ tags:
 
 ## Overview
 
-**Shunno Pay** is a high-reliability, webhook-based payment orchestration gateway engineered at **Shunno IT**. It serves as the financial payment backbone connecting downstream consumer platforms (including Shunno IT SaaS products, affiliated e-commerce merchants, and billing systems) with upstream mobile financial services (bKash, Nagad) and banking rails.
+**Shunno Pay** is an internal payment gateway and webhook orchestration service built at **Shunno IT**. It serves as the common payment bridge connecting our SaaS platforms (such as NetFee and Hisabnikash) and e-commerce client apps with upstream mobile financial services like **bKash** and **Nagad**.
 
-The core engineering objective was to build an ultra-reliable payment settlement engine capable of verifying and ingesting asynchronous payment webhooks, eliminating transaction race conditions, enforcing double-entry ledger bookkeeping, and dispatching signed merchant callbacks with zero dropped events.
-
----
-
-## Architectural Principles & Payment Pipeline
-
-The gateway operates on a zero-trust, asynchronous settlement pipeline:
-
-* **Timing-Safe Signature Verification:** Inbound HTTP webhook payloads are validated against raw byte buffers using HMAC SHA-256 with timing-safe comparison, preventing forged payment callbacks.
-* **Distributed Idempotency Barrier:** Transactions are guarded by dual-layer idempotency tokens in Redis and PostgreSQL, ensuring duplicate provider retries never double-credit customer balances.
-* **ACID Double-Entry Ledger:** All financial movements execute within interactive Prisma transactions (`$transaction`), updating merchant wallets and transaction journals in an atomic commit.
-* **Resilient Outbound Callbacks:** Downstream merchant notifications are queued with exponential backoff schedules and Dead-Letter Queue (DLQ) failover.
+The primary technical goal was reliability: ensuring incoming payment webhooks are securely verified, duplicate payment notifications never double-credit customer balances, and merchant callbacks are reliably delivered even during downstream server hiccups.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & How It Works
 
-### 1. Cryptographic HMAC Signature Verification on Raw Payloads
-* **Challenge:** Upstream payment providers transmit a signature in the HTTP header computed over the raw request body. If standard body-parsing middleware (`express.json()`) normalizes JSON keys or alters whitespace before verification, signature checks fail unpredictably.
-* **Solution:**
-  * Configured Express to preserve the unparsed raw binary buffer on the request object (`req.rawBody`).
-  * Executed `crypto.createHmac('sha256', secret).update(req.rawBody).digest('hex')` using timing-safe comparison (`crypto.timingSafeEqual`) to eliminate timing-attack vulnerabilities.
-  * Webhook validation completes in **< 18ms**, allowing the gateway to respond with HTTP 200 immediately to prevent provider webhook retries.
+Handling money transactions requires zero-trust security and atomic database writes:
 
-### 2. Preventing Double-Credit Exploits (Distributed Idempotency)
-* **Challenge:** Mobile financial providers frequently retry webhooks when network latency occurs. If unhandled, double-crediting occurs, allowing users to receive twice the purchased credits or subscription duration.
-* **Solution:**
-  * Enforced a dual-layer idempotency barrier:
-    * *Layer 1 (Fast In-Memory):* Stored transaction tokens (`trxId`) in **Redis** with an atomic `SET NX EX 86400` lock. Duplicate webhooks arriving within milliseconds are immediately acknowledged and discarded.
-    * *Layer 2 (Relational ACID):* Declared a strict unique constraint on `transactions.provider_trx_id` in PostgreSQL. Any duplicate insertion attempt that bypasses Redis is caught by database unique violation errors and safely rolled back.
-
-### 3. Double-Entry Accounting Ledger with Prisma ORM
-* **Challenge:** Modifying a simple `merchant_balance` column directly via `balance = balance + amount` creates irrecoverable accounting discrepancies if database crashes occur midway or if audit reconciliation is required.
-* **Solution:**
-  * Modeled an immutable double-entry journal system using Prisma:
-    * Every transaction generates matching debit and credit entries inside an interactive `prisma.$transaction()` block.
-    * *Debit:* Bank Clearing Account (Asset increase).
-    * *Credit:* Merchant Wallet (Liability increase) + Gateway Fee (Revenue).
-  * Balances are dynamically verifiable by summing journal line items, guaranteeing 100% mathematical auditability.
-
-### 4. Resilient Merchant Callbacks with Dead-Letter Queue
-* **Challenge:** When downstream merchant servers go offline or experience brief downtime, webhook notifications fail. Without automated retries, merchant databases remain un-notified, leaving orders in "pending" status.
-* **Solution:**
-  * Pushed outbound merchant notifications to an isolated **BullMQ Queue**.
-  * Configured exponential backoff retry schedules (10s, 30s, 2m, 10m, 1h) with a maximum of 5 attempts.
-  * Failed notifications after 5 attempts automatically transition to a **Dead-Letter Queue (DLQ)** with manual operator re-trigger capability, achieving a **99.7% delivery success rate**.
+* **Timing-Safe Signature Verification:** Inbound webhook payloads from payment providers are checked against their raw byte buffers using HMAC SHA-256 with timing-safe comparison to prevent forged callbacks.
+* **Idempotency Barriers:** Each transaction has a unique provider reference. If a mobile money provider retries sending a webhook due to a slow internet connection, our system detects the duplicate in Redis/PostgreSQL and ignores the second attempt.
+* **Atomic Ledger Updates:** Customer wallet credits and accounting entries run inside interactive Prisma `$transaction` blocks. Either both the customer balance and invoice record update successfully, or the entire transaction rolls back cleanly.
+* **Reliable Outbound Callbacks:** Once a payment is confirmed, the notification to the merchant store is queued via **BullMQ** with exponential backoff retries, ensuring the merchant system receives the confirmation even if their server is temporarily restarting.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Accurate HMAC Signature Verification on Raw Payloads
+* **Problem:** Payment APIs calculate their security signature over the exact raw body bytes they sent. When standard Express middleware (`express.json()`) parses the body, it changes whitespace and reorders JSON keys, causing signature checks to fail randomly.
+* **Solution:**
+  * Configured Express body-parser to preserve the unparsed raw binary buffer on the request object (`req.rawBody`).
+  * Performed HMAC SHA-256 computation over the raw buffer before any JSON parsing occurred, eliminating signature mismatches.
+
+### 2. Preventing Double-Credit on Webhook Retries
+* **Problem:** Mobile money gateways frequently re-send successful transaction webhooks 2 or 3 times if they don't get an immediate response within a few seconds. If processed naively, a user who paid $10 could end up credited with $20 or $30.
+* **Solution:**
+  * Implemented an idempotency check in Redis using the provider's unique `transactionId`.
+  * Checked if the transaction was already processed or currently processing.
+  * Safely returned an HTTP 200 to acknowledge the gateway while discarding duplicate processing.
+
+### 3. Graceful Callback Delivery to Merchant Stores
+* **Problem:** Sometimes a merchant's store server goes down for 30 seconds for a deployment right when a customer finishes paying. If our webhook callback fails once, the customer's order remains unpaid.
+* **Solution:**
+  * Used **BullMQ** with an exponential backoff schedule (retrying after 5s, 15s, 1m, 5m, etc.).
+  * Provided an admin retry dashboard where operators can manually inspect failed callbacks and re-trigger them with a single click.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Gateway Service** | Express.js, Node.js | Lightweight, high-throughput event-loop performance for raw webhook streaming and crypto verification. |
-| **ORM & Database** | Prisma ORM, PostgreSQL | Type-safe database queries, atomic interactive transactions (`$transaction`), and relational constraints. |
-| **Queue & Caching** | Redis, BullMQ | Sub-2ms distributed idempotency locks, resilient retry queues, and dead-letter queue isolation. |
-| **Security Layer** | Node.js Crypto (HMAC SHA-256) | Timing-safe cryptographic signature validation and webhook integrity protection. |
-| **Deployment** | Docker, Linux VPS, Nginx, PM2 | Containerized microservice running behind Nginx with SSL termination and PM2 monitoring. |
+| **Backend API** | Node.js, Express.js | Inbound webhook endpoints and merchant settlement APIs. |
+| **Security** | Crypto, HMAC SHA-256 | Timing-safe signature checks on raw byte buffers. |
+| **Database** | PostgreSQL, Prisma ORM | Transaction ledgers, merchant accounts, and payment history. |
+| **Queues & Cache** | Redis, BullMQ | Idempotency locks and outbound callback retries. |
+| **DevOps** | Docker, Nginx | Containerized microservice deployment on Linux VPS. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **< 18ms Ingestion:** Rapid webhook response eliminating provider retry loops.
-* **Zero Financial Drift:** 100% double-entry audit accuracy across merchant balances.
-* **99.7% Callback Delivery:** Automated retries and DLQ failover preventing lost payment notifications.
+* **Zero Financial Discrepancies:** Idempotency checks and atomic transactions prevented duplicate credits and ledger drift.
+* **Reliable Callbacks:** Exponential backoff queues ensured merchant systems never lost confirmation notifications.
+* **Secure Webhooks:** Raw-buffer HMAC validation stopped forged payment requests completely.

@@ -1,27 +1,25 @@
 ---
-title: "Elizn — Million-Row Spreadsheet Engine & Remote Team Activity Tracker"
+title: "Elizn — High-Performance Spreadsheet & Activity Tracker"
 slug: "elizn"
-tagline: "Rendering and analyzing millions of data cells in a single sheet without freezing the browser UI thread"
+tagline: "Rendering and analyzing large datasets in an interactive web spreadsheet without freezing the browser UI"
 company: "Sitgram"
 role: "Senior Frontend & Data Systems Engineer"
 period: "2023 – 2024"
 status: "Production"
 featured: true
-kicker: "Big Data & Spreadsheet Virtualization · Sitgram"
-badge: "Million-Row Sheet"
-stars: "High Performance"
+badge: "Spreadsheet Engine"
 metrics:
-  - label: "Sheet Capacity"
-    value: "1,000,000+"
-    sub: "Cells virtualized in 1 sheet"
-  - label: "Scroll Frame Rate"
-    value: "60 FPS"
-    sub: "< 16ms render budget"
-  - label: "UI Thread Freeze"
-    value: "0 ms"
-    sub: "Web Worker offloaded"
-  - label: "Database Sync"
-    value: "Real-time"
+  - label: "Virtualization"
+    value: "Dual-Axis"
+    sub: "Renders only visible rows & cols"
+  - label: "Heavy Compute"
+    value: "Web Workers"
+    sub: "Formulas run off the main UI thread"
+  - label: "Grid Engine"
+    value: "Handsontable"
+    sub: "Custom React spreadsheet grid"
+  - label: "Database"
+    value: "PostgreSQL"
     sub: "Supabase & Drizzle ORM"
 tags:
   - "Next.js 15"
@@ -37,62 +35,61 @@ liveUrl: "https://elizn.com"
 
 ## Overview
 
-**Elizn** ([https://elizn.com](https://elizn.com)) is a remote team performance monitoring and data-entry management platform built for **Sitgram**. It provides granular, real-time tracking of employee productivity through an interactive, Google Sheets-style spreadsheet interface capable of tracking cell-level edits, keystrokes, active hours, and data entry workflows.
+**Elizn** ([https://elizn.com](https://elizn.com)) is a remote team performance monitoring and data-entry platform built for **Sitgram**. It provides managers and team leads with an interactive, Google Sheets-style spreadsheet interface to review employee work logs, cell edits, and daily productivity figures.
 
-The paramount engineering hurdle was architectural: **managing, rendering, and computing analytics over millions of data points inside a single spreadsheet without locking the user interface or crashing the browser tab.**
-
----
-
-## Architectural Principles & Virtualization Design
-
-Rendering enterprise-scale spreadsheets in web browsers requires strict compute isolation:
-
-* **Dual-Axis Window Virtualization:** Instead of rendering the entire data array into DOM nodes, the renderer calculates dynamic viewport boundaries. Only the rows and columns physically visible on screen (~50 rows × 15 columns = ~750 DOM elements) exist in the browser DOM tree at any millisecond.
-* **Off-Thread Compute (Web Workers):** All heavy statistical formulas, productivity variance calculations, and CSV exports run in background Web Workers, leaving the main JavaScript UI thread completely free for 60 FPS user interactions.
-* **Zero-Copy Memory Transfers:** Data buffers transfer between the UI thread and Web Workers using `ArrayBuffer` transferables, eliminating serialization and memory duplication overhead.
-* **Batch Event Aggregation:** Keystrokes and cell edits are debounced on the client before being sent in transactional batches to Supabase PostgreSQL, preventing database write saturation.
+At **Sitgram**, the biggest technical challenge on this project was frontend performance: **rendering, editing, and calculating statistics across massive tables without locking the browser tab or causing scroll stutter.**
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Technical Approach & Virtualization
 
-### 1. The Browser DOM Rendering Cliff
-* **Challenge:** Standard browser DOM trees become sluggish when rendering more than a few thousand elements. At 50,000+ rows (resulting in over 500,000 cells), standard React component trees cause 100% CPU lockups, frame drops, and browser "Page Unresponsive" crashes.
-* **Solution:**
-  * Integrated and customized **Handsontable** with strict dual-axis window virtualization.
-  * Dynamically calculated absolute offsets for rows and columns, simulating continuous natural scrolling across millions of records.
-  * Achieved sustained **60 FPS scrolling speeds** within a strict 16ms frame budget.
+Standard HTML tables or React component trees struggle when rendering more than a few thousand elements. If you try to render 50,000 rows with 20 columns, the browser creates a million DOM nodes, consuming gigabytes of RAM and crashing the tab.
 
-### 2. Offloading Formula Computation & Aggregation to Web Workers
-* **Challenge:** Calculating complex productivity analytics (keystroke cadence, error rates, hourly throughput, statistical variance) over hundreds of thousands of cell edits on the main thread produced noticeable micro-stutters during operator data entry.
-* **Solution:**
-  * Delegated all analytical mathematical pipelines and diff calculations to background **Web Workers**.
-  * Transferred data payloads via zero-copy `ArrayBuffer` transferables.
-  * Guaranteed **0 ms UI thread freeze**, maintaining sub-5ms keyboard latency for data-entry operators.
-
-### 3. Real-Time Streaming & Database Write Partitioning
-* **Challenge:** Hundreds of concurrent operators continuously emitting cell change events generated massive row lock contention and database write saturation.
-* **Solution:**
-  * Engineered time-bucketed event aggregation on the client side using **Zustand** debouncers.
-  * Grouped bulk changes into atomic batch transactions processed via **Supabase Edge Functions** and **Drizzle ORM**.
-  * Implemented PostgreSQL table partitioning by merchant tenant and billing cycle, keeping query response times under **20ms**.
+* **Dual-Axis Window Virtualization:** Instead of rendering the entire data array into DOM elements, the grid calculates the visible screen area. Only the rows and columns currently visible in the user's viewport (~50 rows by ~15 columns = ~750 DOM nodes) exist in the browser at any given moment.
+* **Offloading Calculations to Web Workers:** All heavy statistical computations, search filters, and CSV export generation run in background Web Workers. This keeps the main JavaScript thread completely free for fluid scrolling and user input.
+* **Efficient Memory Transfers:** Data buffers transfer between the UI thread and Web Workers using transferable `ArrayBuffer` objects, avoiding slow object serialization and memory duplication.
+* **Batched Client Updates:** Keystrokes and cell edits are debounced on the client side before being sent in batches to Supabase/PostgreSQL, preventing server request floods.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Eliminating Scroll Lag on Massive Tables
+* **Problem:** When a user scrolls quickly through tens of thousands of rows, re-calculating cell positions and re-rendering DOM elements can cause frame drops and noticeable input lag.
+* **Solution:**
+  * Implemented strict dual-axis windowing with overscan buffering (rendering a small buffer of rows just above and below the visible viewport).
+  * Reused existing DOM cell elements instead of unmounting and remounting them on scroll.
+  * Maintained a smooth 60 FPS scroll experience even with large datasets.
+
+### 2. Preventing Browser Freezes During Heavy Formula Calculations
+* **Problem:** Running column aggregations (sums, averages, variance calculations) on the main thread blocked the browser event loop, causing mouse clicks and dropdown menus to freeze for seconds at a time.
+* **Solution:**
+  * Moved all mathematical operations into a dedicated Web Worker thread.
+  * The main thread simply sends the dataset pointer to the worker, which performs the calculations in the background and sends back the final summary numbers.
+  * The user interface remains completely responsive while calculations happen in the background.
+
+### 3. Reliable Autosave Without Race Conditions
+* **Problem:** In a fast-paced spreadsheet interface, users make rapid edits across different cells. If cell updates are sent as individual HTTP requests, slower network responses can overwrite newer edits out of order.
+* **Solution:**
+  * Built a client-side edit queue using Zustand.
+  * Changes are grouped into batched transactional patches with sequence numbers and synced to the database every few seconds, ensuring no keystrokes or changes are lost.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Spreadsheet Engine** | Handsontable, Virtual DOM | Dual-axis viewport virtualization for million-row sheet rendering. |
-| **Compute Isolation** | Web Workers, ArrayBuffer | Off-thread mathematical calculations and zero-copy memory transfers. |
-| **Frontend Framework** | Next.js 15, React 19, Zustand | App Router architecture with client-side undo/redo state management. |
-| **Database & ORM** | Supabase (PostgreSQL), Drizzle ORM | Time-series event storage, partitioned tables, and schema migrations. |
-| **Analytics & Telemetry**| PostHog, Custom Session Logger | User event telemetry, typing cadence tracking, and performance monitoring. |
+| **Grid Engine** | Handsontable, React 19, Next.js 15 | Virtualized spreadsheet viewport and cell editing controls. |
+| **Concurrency** | Web Workers, ArrayBuffers | Off-thread calculations, sorting, and large CSV exports. |
+| **State Management**| Zustand | Fast, lightweight client-side edit queues and cell states. |
+| **Database** | PostgreSQL (Supabase), Drizzle ORM | Persistent employee logs, role permissions, and batch writes. |
+| **Analytics** | PostHog | User workflow tracking and error monitoring. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **1,000,000+ Cells:** Virtualized within a single active sheet without memory exhaustion.
-* **60 FPS Scroll Performance:** Maintained silky-smooth frame rates across all browsers.
-* **0 ms UI Freezes:** All analytics calculations completely offloaded to background threads.
+* **Smooth 60 FPS Scrolling:** Virtualized DOM rendering keeps memory usage minimal regardless of dataset size.
+* **Zero UI Freezes:** Calculations and file exports run in background threads without blocking user clicks or keyboard entry.
+* **Reliable Data Sync:** Automatic batched saving prevents network overload and data loss.

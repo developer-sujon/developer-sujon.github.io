@@ -1,7 +1,7 @@
 ---
 title: "Willro — Multi-Tenant Web Platform Monorepo"
 slug: "willro"
-tagline: "High-concurrency multi-tenant web platform monorepo engineered for speed, modularity, isolated client deployments, and remote build caching"
+tagline: "Multi-tenant web platform monorepo built with Turborepo, Next.js, and pnpm workspaces for fast builds and shared client portals"
 company: "Sitgram"
 role: "Lead Software Engineer & Monorepo Architect"
 period: "Dec 2024 – Present"
@@ -10,18 +10,18 @@ featured: false
 kicker: "Monorepos & Systems · Sitgram"
 badge: "Turborepo Multi-Tenant"
 metrics:
-  - label: "Build Acceleration"
-    value: "4.5x"
-    sub: "Via Turborepo remote cache"
-  - label: "Code Sharing"
-    value: "80%"
-    sub: "Shared UI & config packages"
-  - label: "Tenant Routing"
-    value: "< 5ms"
-    sub: "Next.js Edge Middleware"
-  - label: "CI/CD Pipeline"
-    value: "60% Faster"
-    sub: "Hash-based task execution"
+  - label: "Workspace"
+    value: "Turborepo"
+    sub: "pnpm workspaces"
+  - label: "Frontend"
+    value: "Next.js 15"
+    sub: "React 19 App Router"
+  - label: "Routing"
+    value: "Subdomains"
+    sub: "Edge middleware rewrites"
+  - label: "Deployment"
+    value: "Linux VPS"
+    sub: "Nginx & PM2 cluster"
 tags:
   - "Turborepo"
   - "Next.js 15"
@@ -36,70 +36,70 @@ liveUrl: "https://willro.com"
 
 ## Overview
 
-**Willro** ([https://willro.com](https://willro.com)) is a high-concurrency multi-tenant web platform monorepo engineered for **Sitgram**. It consolidates multiple customer-facing commercial portals, internal admin dashboards, and shared enterprise libraries into a unified, high-performance **Turborepo** workspace.
+**Willro** ([https://willro.com](https://willro.com)) is a multi-tenant web platform monorepo built for **Sitgram**. It brings together our customer-facing portals, merchant stores, admin dashboards, and shared packages into a single, organized **Turborepo** workspace.
 
-Prior to this architectural unification, Sitgram operated separate independent codebases with redundant UI components, divergent TypeScript contracts, and slow, repetitive CI/CD builds. Willro restructured the engineering workflow, accelerating build pipelines by **4.5x**, eliminating code duplication by **80%**, and standardizing tenant deployments across Linux VPS infrastructure.
-
----
-
-## Architectural Principles & Monorepo Design
-
-The monorepo architecture enforces strict separation of concerns, high build parallelization, and zero-configuration package consumption:
-
-* **Unified Workspace Architecture:** Managed via **pnpm workspaces** and **Turborepo**, establishing strict package dependency boundaries. Applications consume shared packages through symlinks without requiring independent publishing or manual linking steps.
-* **Wildcard Subdomain Routing:** Custom edge middleware dynamically inspects inbound hostnames, validates tenant status against an edge cache, and maps requests to specific tenant layouts and themes in sub-5ms.
-* **Centralized Design System:** An internal component library built on Tailwind CSS and accessible primitives standardizes typography, forms, layouts, and dynamic themes across all portal apps.
-* **Standardized Tooling & Quality Gates:** Unified ESLint configurations, strict base TypeScript configurations, and Prettier rules eliminate linter discrepancies across frontend and backend services.
+Before this project, our team worked across several separate repositories. That setup caused duplicate UI code, divergent TypeScript types between apps, and slow CI builds. I designed and led the migration to a unified Turborepo monorepo, which cut CI build times down significantly, made code sharing seamless across all apps, and standardized our deployment process on Linux VPS servers.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & Monorepo Setup
 
-### 1. Dynamic Multi-Tenant Subdomain Routing
-* **Challenge:** Each client or merchant on Willro requires a personalized branded storefront (e.g., `tenant-a.willro.com`, `tenant-b.willro.com`) without deploying separate server instances or requiring manual Nginx virtual host configurations for every new tenant.
-* **Solution:**
-  * Configured wildcard DNS (`*.willro.com`) pointing to the primary cluster.
-  * Implemented lightweight **Edge Middleware** in Next.js 15 that inspects the `Host` header on every inbound request in sub-5ms.
-  * Rewrites the request URL internally to dynamic multi-tenant routes (`/app/sites/[siteId]/...`) without altering the user's browser address bar.
-  * Cached verified tenant metadata in an edge memory LRU cache to prevent database query amplification on every page load.
+The monorepo is organized to keep packages modular, builds fast, and dependencies clear:
 
-### 2. Turborepo Remote Caching & Hash-Based Task Execution
-* **Challenge:** In a monorepo containing multiple apps and packages, running `lint`, `type-check`, and `build` across the entire repository on every pull request resulted in 18+ minute CI pipeline bottlenecks.
-* **Solution:**
-  * Structured `turbo.json` with strict inputs and outputs for each task pipeline.
-  * Enabled **Turborepo Remote Caching**: when a developer builds a package or CI tests a pull request, artifact hashes are computed based on source file diffs, dependencies, and environment variables.
-  * If the input files have not changed, Turborepo reuses the cached build artifacts instantly, slashing CI build times from **18 minutes to under 4 minutes (4.5x speedup)**.
-
-### 3. Tree-Shakeable Shared Component Library
-* **Challenge:** Bundling a shared component library into multiple apps often causes bundle bloat if unneeded components or full CSS files are inadvertently included in consumer bundles.
-* **Solution:**
-  * Designed shared packages with TypeScript composite project references and clean ES Module export maps.
-  * Integrated Tailwind CSS using a centralized configuration preset, ensuring apps compile only the specific utility classes actually referenced in their pages.
-  * Decreased production bundle sizes by **38%** across all storefront applications.
-
-### 4. Zero-Downtime Linux VPS Deployment with PM2 & Nginx
-* **Challenge:** Monorepo builds generate multiple production artifacts that must be deployed simultaneously without interrupting active sessions or causing 502 Bad Gateway errors.
-* **Solution:**
-  * Authored automated deployment pipelines triggered via GitHub Actions runners.
-  * Built standalone Next.js bundles (`output: "standalone"`), minimizing container and VPS disk footprints.
-  * Deployed apps under **PM2 Cluster Mode** behind an upstream Nginx load balancer with graceful reload (`pm2 reload all`), guaranteeing zero-downtime releases.
+* **pnpm Workspaces & Turborepo:** All apps and packages live in a single repository. Shared UI components, ESLint presets, Tailwind themes, and TypeScript configs are consumed directly through workspace symlinks without needing manual package publishing.
+* **Wildcard Subdomain Routing:** Custom Next.js Edge Middleware checks incoming hostnames (like `tenant-a.willro.com`), verifies tenant status, and rewrites the request internally to the right tenant layout in real time.
+* **Shared UI Component Library:** We created a shared design system package using Tailwind CSS and Radix UI primitives. Every portal shares the same accessible buttons, modals, form controls, and theme tokens.
+* **Consistent Code Standards:** Centralized ESLint and TypeScript configs ensure every app in the monorepo follows the same code quality rules.
 
 ---
 
-## Technology Stack
+## Engineering Challenges & Practical Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Dynamic Subdomain Routing for Every Tenant
+* **Problem:** Each client needs their own branded storefront (e.g. `client.willro.com`) without us having to configure a new Nginx virtual host or deploy a separate server instance for each tenant.
+* **Solution:**
+  * Pointed wildcard DNS (`*.willro.com`) to our server cluster.
+  * Used lightweight Next.js Edge Middleware to read the `Host` header on every request.
+  * Dynamically rewrote the URL internally to `/app/sites/[siteId]/...` while keeping the custom domain in the visitor's browser.
+  * Cached verified tenant data in memory to avoid querying the database on every single page load.
+
+### 2. Speeding Up CI/CD with Turborepo Remote Caching
+* **Problem:** Running linting, type-checking, and full production builds across every app on every pull request took over 18 minutes, slowing down the whole team.
+* **Solution:**
+  * Configured `turbo.json` with clear task inputs and outputs.
+  * Enabled remote caching so that if code in a specific package hasn't changed, Turborepo reuses the cached build outputs immediately.
+  * Reduced CI build times from **18 minutes down to under 4 minutes**.
+
+### 3. Keeping Shared Component Bundles Lean
+* **Problem:** Putting common components into a shared package can easily bloat client bundles if unused code or unnecessary CSS gets bundled into every app.
+* **Solution:**
+  * Configured package exports using ES Modules and TypeScript project references.
+  * Shared Tailwind configuration presets so consumer apps only compile the CSS classes they actually use.
+  * Kept final production bundles small and fast on mobile networks.
+
+### 4. Zero-Downtime Releases on Linux VPS
+* **Problem:** Deploying multiple updated applications simultaneously to our Linux VPS environment could cause momentary connection drops or 502 errors during server restarts.
+* **Solution:**
+  * Set up automated deployment workflows via GitHub Actions.
+  * Output standalone Next.js builds (`output: "standalone"`) to keep server disk usage minimal.
+  * Ran Node.js processes using **PM2 in cluster mode** behind Nginx with graceful reload (`pm2 reload all`), ensuring zero downtime during updates.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Monorepo Engine** | Turborepo, pnpm Workspaces | Task orchestration, hash-based remote caching, and dependency symlinking. |
-| **Application Layer** | Next.js 15 (App Router), React 19 | Server Components for high-performance storefronts and administrative consoles. |
-| **Shared Libraries** | TypeScript, Radix UI, Zod | Type safety, headless accessible components, and runtime schema validation. |
-| **Styling System** | Tailwind CSS, CSS Variables | Centralized design tokens with dynamic tenant theming. |
-| **DevOps & Infrastructure** | Linux VPS, Nginx, PM2, GitHub Actions | Zero-downtime cluster reloads, automated CI/CD, and SSL termination. |
+| **Monorepo** | Turborepo, pnpm Workspaces | Task pipeline orchestration, remote caching, and package linking. |
+| **Frontend** | Next.js 15 (App Router), React 19 | Server Components for fast initial loads and client dashboards. |
+| **Shared Packages** | TypeScript, Radix UI, Zod | End-to-end type safety, accessible UI primitives, and schema validation. |
+| **Styling** | Tailwind CSS, CSS Variables | Centralized design tokens and tenant-specific theming. |
+| **DevOps** | Linux VPS, Nginx, PM2, GitHub Actions | Rolling zero-downtime updates, automated deployments, and SSL management. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **4.5x Build Acceleration:** Drastic reduction in build times via Turborepo remote caching.
-* **80% Code Reuse:** Shared UI, validation schemas, and configuration packages across all team applications.
-* **Zero Downtime:** Automated rolling reloads on production Linux VPS environments.
+* **Fast Builds:** Daily CI pipeline runs finished 4.5x faster through Turborepo caching.
+* **80% Code Reuse:** Common components, auth checks, and utility functions shared cleanly across all apps.
+* **Zero-Downtime Deployments:** Reliable releases without interrupting active users.

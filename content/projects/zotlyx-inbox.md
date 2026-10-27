@@ -1,7 +1,7 @@
 ---
 title: "Zotlyx Inbox — Open-Source Team Mailbox & AI Assistant"
 slug: "zotlyx-inbox"
-tagline: "Professional self-hosted team inbox and shared mailbox workspace built on Cloudflare Workers, Durable Objects, D1 SQLite, R2, and Workers AI"
+tagline: "Open-source shared team mailbox built on Cloudflare Workers, Durable Objects, D1 SQLite, R2, and Workers AI"
 company: "Open Source"
 kicker: "Open-Source Cloudflare Architecture · Personal Project"
 role: "Creator & Lead Maintainer"
@@ -10,18 +10,18 @@ status: "Open Source"
 featured: true
 badge: "Open Source"
 metrics:
-  - label: "Mailbox Latency"
-    value: "< 80ms"
-    sub: "Edge Durable Object"
-  - label: "AI Integration"
+  - label: "Storage"
+    value: "D1 SQLite & R2"
+    sub: "Dedicated storage per mailbox"
+  - label: "Live Updates"
+    value: "SSE"
+    sub: "Server-Sent Events real-time sync"
+  - label: "AI Drafting"
     value: "Workers AI"
-    sub: "Mailbox-aware drafting"
-  - label: "Deployment"
-    value: "1-Click Deploy"
-    sub: "Cloudflare Workers button"
-  - label: "Storage Isolation"
-    value: "D1 & R2"
-    sub: "Dedicated per mailbox"
+    sub: "Thread summaries & suggested replies"
+  - label: "Deploy"
+    value: "1-Click"
+    sub: "Cloudflare Deploy Button"
 tags:
   - "Cloudflare Workers"
   - "Durable Objects"
@@ -38,59 +38,59 @@ liveUrl: "https://deploy.workers.cloudflare.com/?url=https://github.com/develope
 
 ## Overview
 
-**Zotlyx Inbox** ([GitHub Repository](https://github.com/developer-sujon/zotlyx-inbox)) is an open-source, self-hosted team inbox workspace engineered entirely on the Cloudflare edge ecosystem. It is designed for businesses, startup engineering teams, and customer support organizations that need to manage shared team addresses (e.g. `info@`, `support@`, `sales@`) without forwarding emails to personal inboxes or paying per-seat SaaS subscription fees.
+**Zotlyx Inbox** ([GitHub Repository](https://github.com/developer-sujon/zotlyx-inbox)) is an open-source, self-hosted shared team mailbox app built entirely on Cloudflare's edge platform. It is designed for startups, development teams, and small companies that want to manage shared email addresses (like `support@`, `hello@`, or `billing@`) collaboratively without paying expensive per-seat monthly fees for SaaS tools.
 
-Incoming mail routes directly through **Cloudflare Email Routing**, each individual mailbox executes within an isolated **Durable Object** backed by SQLite storage, binary attachments persist in **Cloudflare R2**, and contextual conversational AI assistance is powered by **Workers AI**.
-
----
-
-## Architectural Principles & Edge Isolation
-
-The application was designed to give teams complete ownership of their communication infrastructure within their own Cloudflare account:
-
-* **Mailbox State Isolation (Durable Objects):** Every shared mailbox is represented by a dedicated Durable Object containing its own isolated SQLite database. This ensures zero data bleed between team departments and sub-80ms message reads.
-* **Server-Sent Events (SSE) Live Sync:** Mailbox state transitions, thread replies, draft changes, and unread badges stream to connected frontend clients in real time via lightweight SSE connections without polling.
-* **Contextual AI Assistance:** An integrated AI side panel searches conversation history, evaluates email threads, and drafts contextual replies directly using Cloudflare Workers AI.
-* **One-Click Deploy Pipeline:** Fully packaged with a Cloudflare deploy button, automatically provisioning workers, D1 schemas, and R2 buckets on first initialization.
+I created this project to explore how far modern serverless infrastructure can go: incoming emails route through **Cloudflare Email Routing**, each team mailbox runs inside an isolated **Durable Object** with its own SQLite database, email attachments are stored in **Cloudflare R2**, and AI email drafting runs on **Cloudflare Workers AI**.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & How It Works
 
-### 1. Isolated Mailbox Architecture with Zero Noisy-Neighbor Impact
-* **Challenge:** Traditional monolithic multi-tenant databases experience table lock contention when a high-traffic mailbox (e.g. automated alerts or marketing campaigns) receives thousands of emails simultaneously.
-* **Solution:**
-  * Adopted Cloudflare's Durable Objects architecture.
-  * Each mailbox operates as an independent edge compute micro-actor with localized SQLite transactional persistence.
-  * Inbound email spikes to one department never degrade UI latency or read throughput for other team mailboxes.
+Traditional shared inbox software requires maintaining VPS servers, background polling daemons, and database migrations. Zotlyx Inbox runs completely serverless inside your own Cloudflare account:
 
-### 2. Large Attachment Upload and Preview Pipeline via Cloudflare R2
-* **Challenge:** Processing email attachments directly through worker memory risks hitting serverless RAM limits.
-* **Solution:**
-  * Streamed email MIME attachments directly into Cloudflare R2 object storage with presigned download and preview URLs.
-  * Preserved full attachment security while keeping worker memory usage negligible.
-
-### 3. Real-Time Collaborative Inbox without WebSockets Overhead
-* **Challenge:** Maintaining persistent bidirectional WebSockets for thousands of inactive browser tabs incurs high connection costs and reconnection instability on mobile networks.
-* **Solution:**
-  * Implemented an optimized Server-Sent Events (SSE) streaming endpoint.
-  * When incoming mail or status changes occur in the Durable Object, the event streams immediately to active listeners, providing seamless live updates without WebSocket complexity.
+* **Isolated Mailboxes with Durable Objects:** Every shared mailbox is managed by a dedicated Durable Object containing its own embedded SQLite database. This keeps emails organized and ensures one busy team mailbox never slows down another.
+* **Real-Time Streaming with Server-Sent Events (SSE):** Instead of clients polling the server every few seconds to check for new mail, the frontend maintains a lightweight SSE connection. When a new email arrives, it appears on screen instantly.
+* **Attachment Storage with Cloudflare R2:** Email attachments (PDFs, screenshots, documents) are parsed out of incoming MIME streams and stored in Cloudflare R2 buckets, keeping the database light.
+* **On-Edge AI Drafting (Workers AI):** An integrated AI helper summarizes long customer email threads and drafts suggested reply templates directly within the UI.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Reliable Email Ingestion and Parsing
+* **Problem:** Incoming emails arrive as raw MIME multi-part messages with nested headers, HTML bodies, plain text alternatives, and inline attachments. Parsing large emails without exceeding edge memory limits was critical.
+* **Solution:**
+  * Used lightweight streaming MIME parsers to extract headers, plain text, and HTML safely.
+  * Extracted binary attachments and streamed them directly to R2 object storage, generating clean presigned view URLs.
+
+### 2. Multi-User Real-Time Inbox Sync
+* **Problem:** When one team member opens an email or marks a ticket as resolved, other team members looking at the same mailbox should see the change right away without needing to manually refresh their browser.
+* **Solution:**
+  * Connected web clients to the mailbox Durable Object via Server-Sent Events (SSE).
+  * State transitions (read status, tags, drafts, replies) broadcast immediately to all connected browsers viewing that mailbox.
+
+### 3. One-Click Self-Hosted Deployment
+* **Problem:** Many open-source tools require complex Docker setup, environment configurations, and database hosting, making them hard for non-DevOps users to install.
+* **Solution:**
+  * Packaged the repository with a Cloudflare "Deploy with Workers" button.
+  * The automated script creates the necessary D1 database tables, R2 buckets, and worker bindings automatically on the user's Cloudflare account.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Edge Compute** | Cloudflare Workers, Durable Objects | Global serverless execution and isolated stateful mailbox actors. |
-| **Databases & Storage** | D1 (SQLite), Cloudflare R2 | Structured thread records and scalable binary email attachments. |
-| **AI Integration** | Cloudflare Workers AI | Context-aware email thread summarization and automated reply drafting. |
-| **Inbound Email** | Cloudflare Email Routing | Direct DNS-level email ingestion and delivery to worker scripts. |
-| **Frontend Workspace** | React 19, React Router v7, Tailwind CSS, Zustand | High-speed email client UI with rich text editing (TipTap) and live SSE sync. |
+| **Serverless Backend** | Cloudflare Workers, Hono | Inbound email handler and REST API endpoints. |
+| **State & Mailbox** | Durable Objects, D1 (SQLite) | Mailbox state isolation and email thread storage. |
+| **File Storage** | Cloudflare R2 | Email attachments, PDFs, and media files. |
+| **AI Assistant** | Cloudflare Workers AI | Summarizing email threads and generating reply drafts. |
+| **Frontend** | React 19, React Router v7, Tailwind CSS | Clean, responsive web email client with dark mode support. |
 
 ---
 
-## Open-Source Availability
+## Key Results
 
-* **Public Repository:** [https://github.com/developer-sujon/zotlyx-inbox](https://github.com/developer-sujon/zotlyx-inbox)
-* **One-Click Deployment:** [Deploy to Cloudflare](https://deploy.workers.cloudflare.com/?url=https://github.com/developer-sujon/zotlyx-inbox)
+* **Zero Hosting Costs for Small Teams:** Runs comfortably within Cloudflare's free/low-cost serverless tiers.
+* **Privacy & Full Control:** Teams keep complete ownership of their communication data inside their own cloud account.
+* **Open Source:** Available on GitHub for anyone to deploy and customize.

@@ -220,10 +220,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
           {/* Bio text */}
           <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
-            Lead Software Engineer architecting high-throughput distributed systems and cloud platforms. Currently leading engineering at{" "}
+            Lead Software Engineer and Systems Architect building high-performance web platforms and cloud infrastructure. Currently leading engineering at{" "}
             <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, with core engineering experience across{" "}
             <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> and{" "}
-            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Shunno IT</span> building sub-second AI pipelines, IoT command queues, and high-scale SaaS products.
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Shunno IT</span> building multi-tenant monorepos, edge APIs, IoT command queues, and production SaaS platforms.
           </p>
 
           {/* Clean Contact Links */}
@@ -402,39 +402,25 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </div>
             </section>
 
-            {/* 4. Technologies */}
+            {/* 4. Technologies & Core Skills */}
             <section className="space-y-3">
               <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Technologies
+                  Skills &amp; Technologies
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Languages &amp; Frameworks</span>
-                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                    TypeScript, JavaScript, Next.js, React, Node.js, NestJS, Express
-                  </span>
-                </div>
-                <div>
-                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Architecture &amp; Data</span>
-                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                    Turborepo, oRPC, Microservices, RabbitMQ, Redis, PostgreSQL, MongoDB, Prisma
-                  </span>
-                </div>
-                <div>
-                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Cloud &amp; DevOps</span>
-                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                    Cloudflare Workers, Durable Objects, Docker, Linux VPS, Nginx, AWS, GCP, GitHub Actions
-                  </span>
-                </div>
-                <div>
-                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Real-Time &amp; Automation</span>
-                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                    SocketIO, WebSockets, Vectorize RAG, n8n Automation, IoT &amp; Serial Telemetry
-                  </span>
-                </div>
+                {skillCategories.map((cat) => (
+                  <div key={cat.title}>
+                    <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">
+                      {cat.title}
+                    </span>
+                    <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                      {cat.skills.map((s) => s.name).join(", ")}
+                    </span>
+                  </div>
+                ))}
               </div>
             </section>
 

@@ -1,7 +1,7 @@
 ---
-title: "Eazlock — Enterprise IoT Device Locking & EMI Management Monorepo"
+title: "Eazlock — IoT Device Locking & EMI Management"
 slug: "eazlock"
-tagline: "High-reliability automated device locking and installment enforcement platform with background cron workers and command queue processors"
+tagline: "Automated device management and installment enforcement platform with background cron schedulers and command queues"
 company: "Yupsis"
 kicker: "IoT & Hardware EMI Security · Yupsis"
 role: "Full Stack & Background Processing Engineer"
@@ -9,20 +9,19 @@ period: "2024 – Present"
 status: "Production"
 featured: true
 badge: "IoT & FinTech"
-stars: "High Concurrency"
 metrics:
-  - label: "Device Sync"
-    value: "Real-time"
-    sub: "Automated MQTT & HTTP ping"
-  - label: "Queue Workers"
-    value: "100% Reliable"
-    sub: "Zero command loss on disconnect"
-  - label: "Installment Automation"
-    value: "Automated"
-    sub: "Grace period & auto-lock triggers"
-  - label: "Dropped Commands"
-    value: "0%"
-    sub: "DevicePendingCommandProcessor"
+  - label: "Target Devices"
+    value: "Android & IoT"
+    sub: "Smartphones, tablets & appliances"
+  - label: "Queue Engine"
+    value: "Redis Queues"
+    sub: "Persistent command buffers"
+  - label: "Scheduler"
+    value: "Cron Workers"
+    sub: "Daily midnight grace-period checks"
+  - label: "Monorepo"
+    value: "Turborepo"
+    sub: "Next.js dashboard & microservices"
 tags:
   - "Next.js 15"
   - "TypeScript"
@@ -37,70 +36,64 @@ liveUrl: "https://eazlock.com"
 
 ## Overview
 
-**Eazlock** ([https://eazlock.com](https://eazlock.com)) is an enterprise IoT device locking and consumer electronics installment (EMI) financing platform built for **Yupsis**. It enables device financiers, smartphone distributors, and retail merchants to automate the financial lifecycle of retail loans by communicating with enrolled hardware devices (Android smartphones, tablets, IoT appliances).
+**Eazlock** ([https://eazlock.com](https://eazlock.com)) is an IoT device management and installment (EMI) financing platform built for **Yupsis**. It helps consumer electronics distributors and smartphone retailers manage financed devices safely.
 
-If a consumer misses their scheduled installment deadline, Eazlock automatically executes staged hardware restrictions—ranging from on-screen payment warnings and notification sounds to outgoing call blocks and total device lockout—restoring full functionality the instant payment is confirmed via digital payment gateways.
-
----
-
-## Architectural Principles & Command Queue Pipeline
-
-The platform orchestrates hardware state changes over unreliable mobile cellular networks:
-
-* **Asynchronous Command Buffering:** Commands never assume devices are immediately reachable. If a device is powered off or in airplane mode, payloads persist in stateful pending queues until a cryptographically authenticated heartbeat signal arrives.
-* **Idempotency & Sequence Numbering:** Monotonically increasing command sequence numbers guarantee that delayed or replayed network packets cannot override current hardware states.
-* **Automated Grace Period Matrix:** High-precision cron workers evaluate customer repayment statuses daily at midnight, gradually escalating enforcement actions to maximize collection rates without abrupt customer disruption.
-* **Cryptographic Tamper Protection:** Commands undergo digital signature verification using public-key cryptography, preventing client-side proxy tampering or spoofed unlock signals.
+If a customer misses an installment payment deadline, Eazlock automatically coordinates staged restrictions—such as on-screen payment reminders, sound alerts, outgoing call restrictions, or lock screens—and instantly restores normal device access the moment an online payment is confirmed through digital wallets or bank rails.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & How It Works
 
-### 1. Guaranteeing Zero Dropped Commands for Disconnected Devices
-* **Challenge:** Borrowers facing default frequently power off their phones, switch on airplane mode, or remove their SIM cards. Direct synchronous HTTP push commands fail with network timeouts. When the phone eventually reconnects weeks later, stale or out-of-order commands caused inconsistent states (e.g., an unlock command executed before an older lock command).
-* **Solution:**
-  * Engineered the **`DevicePendingCommandProcessor`** and **`DevicePendingConsumer`** pipeline.
-  * Every command is assigned an incrementing sequence number and stored in an immutable pending queue in PostgreSQL and Redis.
-  * When a device sends its routine heartbeat ping, the consumer checks for pending commands in strict sequential order.
-  * The command is only marked `COMPLETED` after the device returns a cryptographically signed acknowledgement (ACK), ensuring **100% command delivery reliability**.
+Communicating with mobile devices across unstable cellular networks requires careful queue design:
 
-### 2. Automated Staged Lock Progression (Grace Period Matrix)
-* **Challenge:** Abruptly bricking a customer's phone on day 1 of a missed payment creates consumer backlash and legal friction.
-* **Solution:**
-  * Designed a progressive **3-Stage Enforcement State Machine**:
-    * *Stage 1 (Days 1–3 - Grace Period):* Persistent on-screen payment reminders with direct one-click payment links.
-    * *Stage 2 (Days 4–7 - Soft Restriction):* Outgoing calls and non-essential apps (social media, camera) are temporarily restricted while incoming calls and emergency numbers (999/911) remain fully functional.
-    * *Stage 3 (Day 8+ - Hard Lockdown):* Device screen locks into kiosk mode, displaying only the merchant contact number and payment QR code.
-
-### 3. Instant Automated Unlock on Payment Confirmation
-* **Challenge:** When an overdue customer pays their installment late at night via mobile wallet, they demand immediate device restoration without waiting for customer care office hours.
-* **Solution:**
-  * Integrated payment gateway webhooks directly with the command queue.
-  * Within **< 800ms** of payment settlement, the webhook triggers an atomic database update and pushes a high-priority `DEVICE_UNLOCK` command to the device, unlocking the hardware instantly.
-
-### 4. Cryptographic Command Signing Against Reverse Engineering
-* **Challenge:** Tech-savvy users attempted to intercept HTTP command payloads or spoof server responses using local VPN proxy tools to fake unlock signals.
-* **Solution:**
-  * Implemented public-key cryptography (Ed25519) combined with dynamic device nonce challenges.
-  * The local device agent verifies the server's digital signature against a root public key embedded into the firmware partition.
-  * Fake or replayed unlock payloads are instantly rejected by the device kernel.
+* **Asynchronous Command Buffering:** We never assume a target phone is online right now. If a device is powered off, in airplane mode, or out of cellular coverage, commands wait safely in a stateful pending queue in Redis/PostgreSQL until the device reconnects.
+* **Sequence Numbers & Idempotency:** Every command has a sequential version number. This prevents race conditions where an older "lock" command delayed by network latency arrives after a newer "unlock" command.
+* **Automated Midnight Schedulers:** Cron workers run every midnight to check payment deadlines, advance accounts through grace periods, and dispatch reminders before initiating any device restrictions.
+* **Signed Hardware Payloads:** Commands are cryptographically signed to ensure only authorized server instructions can alter the device state.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Handling Disconnected and Offline Devices
+* **Problem:** Borrowers facing payment deadlines frequently turn off their phones or disconnect from mobile data. Standard HTTP push requests immediately fail with connection timeouts.
+* **Solution:**
+  * Built a `DevicePendingCommandProcessor` queue.
+  * When a command is triggered, it persists with a `PENDING` state.
+  * The enrolled device application periodically sends a lightweight heartbeat ping.
+  * As soon as the heartbeat arrives, the server delivers pending commands in exact order and waits for cryptographic execution receipts.
+
+### 2. Preventing Conflicting Command Replays
+* **Problem:** If a customer pays their installment at 10:00 AM, the system sends an "UNLOCK" command. If a delayed "LOCK" command from the night before was still in transit over slow 2G data, executing it out of order could lock the phone right after the customer paid.
+* **Solution:**
+  * Assigned monotonically increasing sequence numbers and timestamps to every device state transition.
+  * The device client drops any incoming command that carries a sequence number lower than or equal to its current state, ensuring only the latest instructions take effect.
+
+### 3. Gradual Enforcement Without Abrupt Disruption
+* **Problem:** Immediately locking a customer's phone on day one of a missed payment harms customer trust and increases support ticket volume.
+* **Solution:**
+  * Designed a flexible grace-period matrix:
+    * **Day 1–3:** Gentle on-screen payment reminders and daily SMS alerts.
+    * **Day 4–6:** Audible notification chimes and payment prompts during device wake.
+    * **Day 7+:** Restrict outgoing non-emergency actions until payment confirmation.
+  * Once the digital payment gateway confirms the installment, the system immediately dispatches the unlock instruction without manual staff intervention.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Monorepo System** | Turborepo, TypeScript | Unified workspace sharing schemas, types, and logic between API, admin portal, and background cron services. |
-| **Frontend Admin** | Next.js 15, Tailwind CSS | High-performance dashboard for merchant loan tracking, GPS logs, and device status management. |
-| **Command Processing**| Node.js, Custom Queue Processor | Asynchronous queue with heartbeat poll reconciliation, guaranteeing zero command loss. |
-| **Background Cron** | Node.js Task Scheduler | Automated midnight evaluations of EMI due dates, grace periods, and late penalty calculations. |
-| **Database & Cache** | PostgreSQL, Redis | ACID transaction logs for financial repayments and Redis pub/sub for real-time device status pings. |
+| **Backend & Queues** | Node.js, Redis, BullMQ | Command queues, heartbeat verification, and device state management. |
+| **Database** | PostgreSQL, Prisma | Customer contracts, loan schedules, and device audit logs. |
+| **Schedulers** | Node Cron, BullMQ | Midnight payment audits and automatic grace-period progression. |
+| **Frontend & Admin** | Next.js 15, React 19, Tailwind CSS | Management dashboard for distributors and merchant stores. |
+| **Monorepo** | Turborepo | Shared TypeScript interfaces and configs between API and dashboard. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **99.99% Command Delivery:** Zero lost lock/unlock signals across thousands of enrolled devices.
-* **< 800ms Auto-Unlock:** Instant hardware reactivation upon online payment confirmation.
-* **100% Emergency Availability:** Unrestricted emergency dialer access (999/911) maintained at all times.
+* **Zero Dropped Instructions:** Offline devices receive and execute pending commands safely the moment they reconnect.
+* **Automated Payment Lifecycle:** Staged reminders and instant automatic unlocks reduce customer disputes and administrative workload.
+* **Reliable Device Fleet Management:** Distributors monitor thousands of enrolled devices securely from a single dashboard.

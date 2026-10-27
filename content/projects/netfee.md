@@ -1,7 +1,7 @@
 ---
-title: "NetFee — Enterprise ISP Billing SaaS & MikroTik Bandwidth Engine"
+title: "NetFee — ISP Billing SaaS & MikroTik Bandwidth Engine"
 slug: "netfee"
-tagline: "Automated internet service provider billing platform with real-time MikroTik RouterOS provisioning, automated disconnects, and payment gateway integration"
+tagline: "Automated internet service provider billing platform with real-time MikroTik RouterOS provisioning, payment gateway integration, and automated disconnects"
 company: "Shunno IT"
 kicker: "ISP SaaS & Network Automation · Shunno IT"
 role: "Junior Software Engineer"
@@ -10,18 +10,18 @@ status: "Production"
 featured: false
 badge: "ISP SaaS"
 metrics:
-  - label: "Provisioning Latency"
-    value: "< 1.2s"
-    sub: "MikroTik RouterOS API sync"
-  - label: "Billing Automation"
-    value: "100%"
-    sub: "Auto disconnect & recharge"
-  - label: "System Uptime"
-    value: "99.9%"
-    sub: "High-availability Linux VPS"
-  - label: "SMS Reliability"
-    value: "99.5%"
-    sub: "BullMQ queue with auto-retry"
+  - label: "Networking"
+    value: "MikroTik"
+    sub: "RouterOS API socket pool"
+  - label: "Billing"
+    value: "Automated"
+    sub: "Self-service recharges & disconnects"
+  - label: "Backend"
+    value: "Nest.js"
+    sub: "PostgreSQL & Redis cache"
+  - label: "Alerts"
+    value: "BullMQ"
+    sub: "Scheduled SMS reminders with retries"
 tags:
   - "Nest.js"
   - "React"
@@ -38,67 +38,60 @@ liveUrl: "https://netfeebd.com"
 
 ## Overview
 
-**NetFee** ([https://netfeebd.com](https://netfeebd.com)) is a mission-critical, multi-tenant ISP billing and network subscriber management SaaS platform engineered at **Shunno IT**. It automates daily operations for hundreds of broadband internet service providers (ISPs) across Bangladesh.
+**NetFee** ([https://netfeebd.com](https://netfeebd.com)) is a multi-tenant ISP billing and subscriber management platform built at **Shunno IT**. It automates daily operations for broadband internet service providers (ISPs) across Bangladesh.
 
-The platform bridges commercial subscription billing with physical network edge routers. It orchestrates customer subscription lifecycles, self-service online payments via mobile wallets (bKash, Nagad), instant bandwidth throttle/unthrottle triggers, MAC reseller management, and automated disconnection cron workers directly interfacing with the **MikroTik RouterOS API**.
-
----
-
-## Architectural Principles & Network Automation
-
-NetFee integrates billing accounting with direct router management:
-
-* **Persistent Socket Connection Pool:** Nest.js maintains monitored TCP socket connections to distributed MikroTik routers, executing commands in sub-1.2 seconds without exhausting router CPU.
-* **Subscription State Machine:** Subscribers transition automatically through deterministic states (`ACTIVE` -> `EXPIRED` -> `GRACE_PERIOD` -> `DISABLED`), triggering corresponding router queue and firewall rule adjustments.
-* **Multi-Tier Reseller Accounting:** Sub-resellers and distributor partners operate through isolated prepaid virtual wallets, preventing unauthorized bandwidth leasing and enforcing credit limits.
-* **Automated Customer Alert Lifecycle:** Scheduled BullMQ background workers dispatch staged SMS reminders prior to expiration and immediately upon payment confirmation.
+The software connects business billing with physical network equipment. It handles customer PPPoE and static IP subscriptions, online customer recharges via mobile wallets (bKash, Nagad), instant bandwidth speed adjustments, sub-reseller commissions, and automated disconnection cron jobs that talk directly to the **MikroTik RouterOS API**.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & How It Works
 
-### 1. High-Concurrency MikroTik RouterOS Socket Management
-* **Challenge:** ISPs manage fleets of MikroTik routers (CCR, RB series) located across distributed geographic nodes. Sending uncoordinated synchronous API commands during morning billing bursts caused connection pool exhaustion, socket timeouts, and router CPU spikes.
-* **Solution:**
-  * Developed a persistent **MikroTik Socket Connection Pool** inside Nest.js with heartbeat health checks.
-  * Packaged commands into an asynchronous **BullMQ Redis Queue**: when a payment is confirmed, an API task is enqueued with rate-limiting (maximum 15 concurrent socket operations per physical router).
-  * Reduced router command execution latency to **< 1.2 seconds** while eliminating router CPU overload risks.
+Managing hundreds of client routers with thousands of subscribers requires reliable socket connections and predictable billing state transitions:
 
-### 2. Instant Automated Reconnection & Disconnection Automation
-* **Challenge:** When a subscriber pays their monthly invoice at late night via bKash or Nagad, they expect instant internet reactivation without waiting for human operator intervention. Non-paying users must also be isolated precisely at midnight without disrupting active paying sessions.
-* **Solution:**
-  * *Recharge Flow:* Payment gateway webhooks trigger an atomic transaction: marks the invoice paid, advances the subscriber's expiry date by 30 days, and fires a MikroTik command to enable the PPPoE secret (`/ppp/secret/set disabled=no`) and refresh the dynamic firewall address list.
-  * *Disconnect Flow:* Scheduled midnight cron workers identify expired accounts and move their IP into a walled-garden captive address list, rerouting HTTP traffic to a payment reminder page.
-
-### 3. Multi-Tier Reseller Accounting & Commission Settlement
-* **Challenge:** Large ISPs delegate bandwidth distribution to sub-resellers. Calculating distributor margins, per-subscriber reseller cuts, and preventing resellers from creating users beyond their prepaid credit limit was a major accounting challenge.
-* **Solution:**
-  * Built an immutable double-entry balance ledger for resellers.
-  * Resellers maintain a prepaid virtual wallet: creating or renewing a 10 Mbps subscriber atomically debits the reseller's wallet balance.
-  * If the reseller's balance is insufficient, the system rejects user creation, preventing unauthorized bandwidth leasing and financial leakage.
-
-### 4. Resilient Expiration Alarms via Queued SMS Notifications
-* **Challenge:** Subscribers frequently blamed ISPs for abrupt disconnects due to missed expiration dates. Sending bulk reminder SMS synchronously to thousands of users on the last day of the month led to gateway timeouts and delivery failures.
-* **Solution:**
-  * Implemented automated reminder stages: **3 days prior**, **1 day prior**, and **on the day of expiration**.
-  * Distributed SMS payloads across scheduled BullMQ workers with telco routing failover, guaranteeing a **99.5% delivery success rate**.
+* **Persistent Socket Connection Pool:** The NestJS backend manages active TCP socket connections to distributed MikroTik routers, executing commands to enable, disable, or adjust subscriber profiles without overloading router CPUs.
+* **Subscription State Machine:** Subscribers move automatically through clear states (`ACTIVE` → `EXPIRED` → `GRACE_PERIOD` → `DISABLED`). When a state changes, the system updates the customer's firewall rule or IP pool on the router in real time.
+* **Reseller Wallet System:** Sub-resellers and local cable operators have isolated prepaid wallets, preventing unauthorized bandwidth distribution beyond their prepaid balances.
+* **Scheduled SMS Pipeline:** BullMQ workers send automated payment reminders before package expiration dates and confirmation SMS messages once paid.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Managing Sockets to Hundreds of Remote MikroTik Routers
+* **Problem:** Opening a new TCP socket connection to a MikroTik router for every single customer check took several seconds and quickly hit connection limits on client routers.
+* **Solution:**
+  * Implemented a connection pooling layer in Node.js.
+  * Reused authenticated sockets for consecutive commands and grouped batch queries together.
+  * Added health checks and automatic reconnection logic when network links between routers and our servers drop temporarily.
+
+### 2. High-Volume Billing Day Automation
+* **Problem:** On the 1st of every month, thousands of customer subscriptions expire at once. Running thousands of router API commands simultaneously caused CPU spikes on client routers and timed out database queries.
+* **Solution:**
+  * Distributed the expiration checks into a rate-limited **BullMQ** queue with Redis.
+  * Commands to routers were throttled into small batches per router, preventing router reboots and keeping the web interface responsive.
+
+### 3. Immediate Reconnection on Payment
+* **Problem:** When an expired user pays their monthly bill online at night, they expect their internet to turn back on instantly without waiting for an ISP technician to wake up.
+* **Solution:**
+  * Integrated bKash and Nagad payment webhooks.
+  * When payment clears, the backend updates the database, removes the user from the "Disabled" address list on the MikroTik router, and re-enables their full bandwidth profile in under 2 seconds.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **Backend Core** | Nest.js, Node.js, TypeScript | Modular domain services (`RouterOSModule`, `BillingModule`, `PaymentModule`). |
-| **Frontend Portal** | React, Tailwind CSS | Real-time subscriber dashboard, billing reports, and reseller management. |
-| **Hardware Interface** | MikroTik RouterOS API | Direct TCP binary protocol communication (port 8728) for PPPoE and bandwidth control. |
-| **Database & Cache** | PostgreSQL, Redis | PostgreSQL for ACID billing transactions; Redis for session caching and router task queues. |
-| **DevOps & Hosting** | Docker, Linux VPS, Nginx, PM2 | High-availability server configuration with automated backups and rolling reloads. |
+| **Backend** | NestJS, TypeScript, Node.js | Modular business logic, subscriber auth, and API routes. |
+| **Networking** | MikroTik RouterOS API, TCP Sockets | Direct router management for PPPoE and Hotspot users. |
+| **Database** | PostgreSQL, Redis | Subscriber records, invoices, and session caching. |
+| **Queues** | BullMQ | Rate-limited router commands and staged SMS alerts. |
+| **Frontend** | React, Tailwind CSS | Admin dashboard, cashier portal, and customer payment page. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **< 1.2s Provisioning:** Instant router synchronization upon online payment confirmation.
-* **100% Billing Automation:** Eliminated manual operator intervention for recharges and disconnections.
-* **99.9% System Uptime:** High reliability across hundreds of ISP network deployments.
+* **Hands-Free Operation:** Automated recharges and disconnections eliminate manual administrative work for ISP operators.
+* **Stable Network Connections:** Pooled socket connections avoid overloading client routers during peak billing cycles.
+* **Reliable Payments:** Seamless mobile wallet integration lets subscribers pay and reconnect anytime, 24/7.

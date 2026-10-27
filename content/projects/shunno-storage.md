@@ -1,7 +1,7 @@
 ---
-title: "Shunno Storage — Scalable Enterprise Cloud File Storage SaaS"
+title: "Shunno Storage — Cloud File Storage & Media Service"
 slug: "shunno-storage"
-tagline: "Scalable cloud object storage system with enterprise security, public/private bucket APIs, streaming multipart uploads, and responsive management console"
+tagline: "Internal cloud object storage service with streaming multipart uploads, presigned HMAC URLs, and automatic image optimization"
 company: "Shunno IT"
 kicker: "Cloud Storage & Scalable APIs · Shunno IT"
 role: "Junior Software Engineer"
@@ -10,18 +10,18 @@ status: "Production (Internal)"
 featured: false
 badge: "Internal Platform"
 metrics:
-  - label: "Upload Memory Buffer"
-    value: "< 30MB"
-    sub: "Fixed stream backpressure"
-  - label: "API Query Latency"
-    value: "< 45ms"
-    sub: "Indexed MongoDB metadata"
-  - label: "Storage Scale"
-    value: "Infinite Scale"
-    sub: "Chunked binary object store"
-  - label: "Signed URL Auth"
-    value: "< 5ms"
-    sub: "Cryptographic HMAC token"
+  - label: "Upload Engine"
+    value: "Stream Piping"
+    sub: "Direct socket-to-disk with Busboy"
+  - label: "Security"
+    value: "Presigned URLs"
+    sub: "Expiring HMAC access tokens"
+  - label: "Folder Index"
+    value: "MongoDB"
+    sub: "Materialized path file hierarchies"
+  - label: "Images"
+    value: "Sharp"
+    sub: "Automated WebP thumbnail generation"
 tags:
   - "Express.js"
   - "MongoDB"
@@ -35,68 +35,61 @@ tags:
 
 ## Overview
 
-**Shunno Storage** is an enterprise-grade cloud file storage and media delivery SaaS platform built at **Shunno IT**. It delivers highly scalable, secure object storage infrastructure for modern web applications, mobile apps, and enterprise backends.
+**Shunno Storage** is an internal cloud file storage and asset delivery service built at **Shunno IT**. It provides secure object storage and asset hosting for our web applications, client portals, and internal tools.
 
-The platform provides developers and organizations with custom REST APIs for both public CDN assets and private enterprise documents. It features streaming chunked uploads, time-limited presigned download URLs, automated MIME validation, and an interactive, responsive administrative management console with full-text file search and folder hierarchy navigation.
-
----
-
-## Architectural Principles & Stream Pipeline
-
-The platform is engineered around stream processing to prevent server memory saturation:
-
-* **Stream Piping with Backpressure:** Upload payloads are never buffered into RAM. Inbound binary HTTP streams pipe directly from the network socket to physical disk volumes with explicit flow control.
-* **Cryptographic Presigned URLs:** Private documents remain inaccessible to the public internet, requiring time-limited HMAC SHA-256 tokens for verified file retrieval.
-* **Materialized Path Hierarchy:** Folder trees and file locations are indexed using materialized path strings in MongoDB, allowing sub-45ms recursive folder lookups without relational table joins.
-* **Lazy Media Transcoding:** High-resolution image assets are transformed into optimized WebP thumbnails on first access using Sharp and cached on disk.
+The platform gives developers REST APIs to upload, organize, and serve both public web media (like profile photos and product thumbnails) and private business files (like PDF receipts, contracts, and database backups) with time-limited access tokens.
 
 ---
 
-## Key Engineering Challenges & Solutions
+## Architecture & How It Works
 
-### 1. Memory-Safe Streaming Multipart Uploads with Backpressure Control
-* **Challenge:** When hundreds of users upload multi-gigabyte media files (e.g. video files, database backups) concurrently, standard file-parsing middleware (like buffering Multer) loads file chunks into Node.js server RAM. This led to massive memory spikes, V8 heap exhaustion, and catastrophic process crashes.
-* **Solution:**
-  * Replaced memory-buffering libraries with native **Node.js Transform Streams** and streaming parsers (`busboy`).
-  * Piped incoming binary streams directly from the HTTP request socket to disk storage with explicit stream backpressure handling (`pause()` and `resume()`).
-  * Fixed maximum Node.js heap memory usage to **< 30MB per worker thread**, regardless of whether users uploaded a 5MB image or a 4GB raw archive.
+Serving and storing large files requires streaming pipelines that never exhaust server memory:
 
-### 2. Time-Limited Signed URLs & Granular Access Control
-* **Challenge:** Providing direct download links to sensitive corporate documents (contracts, invoices, employee records) allows unauthorized access if URLs are forwarded or shared publicly.
-* **Solution:**
-  * Implemented an Amazon S3-style **Presigned URL System**.
-  * Download links are generated with an expiration timestamp and an HMAC SHA-256 signature calculated over the bucket ID, file key, and expiration window.
-  * When a client requests the private file, Express verifies the cryptographic token in **< 5ms**. If the token has expired or the signature is tampered with, access is denied immediately with HTTP 403 Forbidden.
-
-### 3. Fast File Metadata Search & Hierarchical Folder Indexing in MongoDB
-* **Challenge:** As bucket counts grew to millions of records, traditional recursive folder lookups and filename regex searches caused slow database collection scans and 500ms+ response times in the admin file explorer.
-* **Solution:**
-  * Modeled file hierarchies using **Materialized Path Patterns** in MongoDB (e.g. `path: "/root/marketing/2024/campaign/"`).
-  * Created compound indexes on `{ bucketId: 1, path: 1, isDeleted: 1 }` and text indexes on `{ filename: "text" }`.
-  * Accelerated file navigation and folder expansion to **sub-45ms** across millions of indexed documents.
-
-### 4. On-the-Fly Image Optimization & Lazy Media Caching
-* **Challenge:** Loading high-resolution image galleries in the admin dashboard wasted massive bandwidth and caused slow page rendering.
-* **Solution:**
-  * Built an automated thumbnail generation pipeline using **Sharp** (libvips C-bindings).
-  * Generated lightweight WebP thumbnails on first request and cached them on disk, slashing admin thumbnail payload sizes by **85%**.
+* **Memory-Safe Stream Piping:** Uploaded files are piped directly from incoming HTTP network streams to physical storage volumes using streaming parsers (`busboy`). Files are never buffered completely in server RAM, keeping memory usage constant regardless of file size.
+* **Presigned Access URLs:** Private documents remain inaccessible to the open web. Authorized users request short-lived HMAC-signed URLs that expire automatically after a set period (e.g. 15 minutes).
+* **Materialized Path File Trees:** Folder structures and nested directories are stored in MongoDB using materialized path strings (e.g. `/companies/shunno/documents/2024/`). This allows instant directory listings without recursive database lookups.
+* **On-Demand WebP Optimization:** High-resolution uploaded images are automatically converted to compressed WebP thumbnails on first request using **Sharp** and cached on disk.
 
 ---
 
-## Technology Stack
+## Practical Engineering Challenges & Solutions
 
-| Layer | Technologies | Role & Architectural Purpose |
+### 1. Stopping Server Memory Crashes on Large Uploads
+* **Problem:** Default file-upload middleware (like in-memory Multer) buffers uploaded files into Node.js server RAM before writing them to disk. When several users uploaded large video files or zip backups at once, the Node.js process ran out of memory and crashed.
+* **Solution:**
+  * Replaced memory-buffering libraries with native **Node.js Streams** and `busboy`.
+  * As chunks arrive on the network socket, they are piped immediately to the destination storage disk with backpressure handling.
+  * Node.js memory footprint stayed low (under 40MB) even while handling concurrent gigabyte-sized uploads.
+
+### 2. Protecting Sensitive Company Documents
+* **Problem:** Confidential client documents (like national IDs, contracts, and financial receipts) need to be downloaded by authorized users, but must not be publicly guessable or indexable by search engine bots.
+* **Solution:**
+  * Stored private files in an isolated folder outside the web server's public root.
+  * Generated signed download URLs containing an expiration timestamp and an HMAC SHA-256 signature.
+  * If a link is shared or accessed after expiring, the server rejects the request with an HTTP 403.
+
+### 3. Fast Thumbnail Delivery for Slow Mobile Connections
+* **Problem:** Users often upload 10MB raw smartphone photos for profile pictures or product listings, which caused slow page loads and high bandwidth usage on mobile connections.
+* **Solution:**
+  * Integrated the **Sharp** image processing library.
+  * Automatically generated lightweight WebP thumbnail versions upon upload and served them with long-lived browser cache headers.
+
+---
+
+## Tech Stack
+
+| Layer | Tools | What it does |
 | :--- | :--- | :--- |
-| **API & Streaming** | Express.js, Node.js Streams | Native stream piping, non-blocking I/O, and fine-grained HTTP chunked transfer control. |
-| **Metadata Engine** | MongoDB, Mongoose | Flexible schema for dynamic file metadata, tags, EXIF data, and fast materialized folder queries. |
-| **Binary Optimization** | Sharp (libvips) | Ultra-fast multi-threaded image resizing, compression, and WebP transcoding. |
-| **Security Layer** | HMAC SHA-256 Presigned Tokens | Tamper-proof, time-decaying download URLs for private enterprise storage. |
-| **DevOps & Storage** | Docker, Linux VPS Volumes | High-capacity block storage mounts with automated volume scaling and Nginx edge caching. |
+| **Backend API** | Node.js, Express.js | File upload endpoints, folder management, and auth tokens. |
+| **Streaming** | Node.js Streams, Busboy | Memory-safe streaming from network sockets directly to disk. |
+| **Media Processing** | Sharp | Automatic WebP conversion and thumbnail resizing. |
+| **Database** | MongoDB, Mongoose | File metadata, permissions, and directory path index. |
+| **Security** | Crypto, HMAC SHA-256 | Presigned time-limited access tokens for private files. |
 
 ---
 
-## Measurable Production Impact
+## Key Results
 
-* **< 30MB Memory Usage:** Stream backpressure prevented OOM process crashes during heavy concurrent uploads.
-* **< 45ms Query Latency:** Indexed MongoDB materialized paths for instant folder traversal.
-* **85% Bandwidth Reduction:** Automated WebP thumbnail generation for admin media previews.
+* **Stable Server Performance:** Streaming uploads completely stopped out-of-memory server crashes.
+* **Protected Files:** Secure presigned URLs kept sensitive documents safe from unauthorized access.
+* **Fast Page Loads:** WebP image compression sped up client image loading significantly.
