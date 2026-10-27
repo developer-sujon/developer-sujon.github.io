@@ -382,8 +382,16 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                 {/* Sitgram Card */}
                 <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">Sitgram</span>
-                    <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">Dec 2024 – Present</span>
+                    <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                      Sitgram
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                        Active
+                      </span>
+                    </span>
+                    <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Dec 2024 – Present
+                    </span>
                   </div>
                   <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
                     Lead Software Engineer
@@ -619,31 +627,53 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </div>
 
               <div className="space-y-8">
-                {experiences.map((exp, idx) => (
-                  <div
-                    key={idx}
-                    className="relative pl-5 sm:pl-6 border-l border-zinc-200 dark:border-zinc-800 space-y-3 pb-2 last:pb-0"
-                  >
-                    {/* Subtle Timeline Node */}
-                    <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 border-2 border-[var(--bg-primary)]" />
-
-                    {/* Header: Company, Role, Period */}
-                    <div className="space-y-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                            {exp.company}
-                          </h3>
-                          <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">/</span>
-                          <span className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 font-medium">
-                            {exp.role}
-                          </span>
+                {experiences.map((exp, idx) => {
+                  const isPresent = exp.period.toLowerCase().includes("present");
+                  return (
+                    <div
+                      key={idx}
+                      className="relative pl-5 sm:pl-6 border-l border-zinc-200 dark:border-zinc-800 space-y-3 pb-2 last:pb-0"
+                    >
+                      {/* Timeline Node: Active green pulsing indicator for Present, muted for past */}
+                      {isPresent ? (
+                        <div className="absolute -left-[7px] top-1.5 w-3.5 h-3.5 flex items-center justify-center">
+                          <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-[var(--bg-primary)] ring-2 ring-emerald-500/30 shadow-xs" />
                         </div>
-                        
-                        <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
-                          {exp.period}
-                        </span>
-                      </div>
+                      ) : (
+                        <div className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700 border-2 border-[var(--bg-primary)]" />
+                      )}
+
+                      {/* Header: Company, Role, Period */}
+                      <div className="space-y-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                              {exp.company}
+                              {isPresent && (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                  Active Role
+                                </span>
+                              )}
+                            </h3>
+                            <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">/</span>
+                            <span className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 font-medium">
+                              {exp.role}
+                            </span>
+                          </div>
+                          
+                          {isPresent ? (
+                            <span className="text-xs font-mono shrink-0 flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              <span>{exp.period}</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
+                              {exp.period}
+                            </span>
+                          )}
+                        </div>
 
                       <div className="flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
                         <span>{exp.location}</span>
@@ -717,7 +747,8 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                       ))}
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
             </section>
 
