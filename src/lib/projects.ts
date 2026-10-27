@@ -39,11 +39,25 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
       } as ProjectMetadata;
     });
 
-  // Sort featured first, then by company (Yupsis first, then Sitgram)
+  const preferredOrder = [
+    "willro",
+    "zotlyx",
+    "torongo",
+    "hisabnikash",
+    "elizn",
+    "eazlock",
+    "netfee",
+    "support-ticket",
+    "shunno-pay",
+    "shunno-storage",
+  ];
+
   return allProjects.sort((a, b) => {
-    if (a.featured !== b.featured) return b.featured ? 1 : -1;
-    if (a.company === "Yupsis" && b.company !== "Yupsis") return -1;
-    if (b.company === "Yupsis" && a.company !== "Yupsis") return 1;
+    const idxA = preferredOrder.indexOf(a.slug);
+    const idxB = preferredOrder.indexOf(b.slug);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
     return 0;
   });
 }

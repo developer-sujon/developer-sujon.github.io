@@ -33,6 +33,7 @@ tags:
   - "Upstash QStash"
   - "Turborepo"
 githubUrl: "https://github.com/yupsis/torongo"
+liveUrl: "https://torongo.app"
 ---
 
 ## 📌 Executive Summary

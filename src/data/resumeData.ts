@@ -98,11 +98,11 @@ export const resumeData: ResumeData = {
     ],
     yearsOfExperience: "5+ Years",
     coreHighlights: [
-      "At Sitgram: Led developer team, established Turborepo monorepo, and standardized type-safe oRPC contracts across services.",
+      "At Sitgram: Architected Willro multi-tenant Turborepo monorepo and virtualized 1,000,000+ spreadsheet cells in Elizn.",
       "At Yupsis: Architected Two-Zone Split Architecture for Zotlyx, combining Cloudflare Workers with Supabase PostgreSQL.",
-      "At Sitgram: Virtualized and rendered 1,000,000+ data cells in Elizn inside a single sheet with 60 FPS scrolling.",
-      "At Yupsis: Built resilient asynchronous pending command queues for Eazlock IoT device installment enforcement.",
-      "At Shunno IT: Shipped 4 production SaaS products: Hisabnikash, NetFee, Shunno Pay, and Shunno Storage.",
+      "At Yupsis: Built Torongo Cloud MikroTik Hotspot Billing Platform using oRPC edge workers and Supabase Hyperdrive.",
+      "At Shunno IT: Lead Full-Stack Architect for Hisabnikash multi-store inventory SaaS and NetFee ISP billing engine.",
+      "At Shunno IT: Built internal enterprise platforms: SupportTicket SLA engine, Shunno Pay, and Shunno Storage.",
     ],
   },
   metrics: [
@@ -144,7 +144,7 @@ export const resumeData: ResumeData = {
         "Set up and maintained CI/CD pipelines on AWS and GCP — automated deployments and zero-downtime releases",
         "Managed Linux VPS infrastructure — Nginx, SSL, PM2, and server security",
       ],
-      projectsMentioned: ["Elizn", "Willro"],
+      projectsMentioned: ["Willro", "Elizn"],
       technologies: [
         "Software Infrastructure",
         "System Design",
@@ -179,7 +179,7 @@ export const resumeData: ResumeData = {
         "Configured CI/CD pipelines on AWS and GCP with GitHub Actions — automated builds and zero-downtime deploys",
         "Managed Linux VPS environments — Nginx, SSL, PM2, and server hardening",
       ],
-      projectsMentioned: ["Zotlyx", "Eazlock", "Torongo"],
+      projectsMentioned: ["Zotlyx", "Torongo", "Eazlock"],
       technologies: [
         "Software Infrastructure",
         "Turborepo",
@@ -202,7 +202,7 @@ export const resumeData: ResumeData = {
       location: "Rajshahi, Bangladesh · On-site",
       period: "Dec 2022 – Jun 2025 · 2 yrs 7 mos",
       type: "Full-time",
-      summary: "Designed and maintained full-stack production SaaS applications, real-time notification engines, and microservice infrastructure across Hisabnikash, NetFee, Shunno Pay, and Shunno Storage.",
+      summary: "Full-stack architecture and engineering across production commercial SaaS applications and internal platforms, including Hisabnikash, NetFee, SupportTicket, Shunno Pay, and Shunno Storage.",
       highlights: [
         "Designed and maintained full-stack applications using React, NodeJS, ExpressJS, NestJS, and MongoDB — covering both frontend UI and backend API layers",
         "Built a real-time notification system using SocketIO that auto-updated users without page refresh, reducing manual refresh dependency entirely",
@@ -211,7 +211,7 @@ export const resumeData: ResumeData = {
         "Provisioned and maintained multiple Linux VPS environments, including server setup, security hardening, and uptime monitoring",
         "Diagnosed and resolved critical bugs across frontend and backend layers, ensuring stable production performance",
       ],
-      projectsMentioned: ["Hisabnikash", "NetFee", "Shunno Pay", "Shunno Storage"],
+      projectsMentioned: ["Hisabnikash", "NetFee", "SupportTicket", "Shunno Pay", "Shunno Storage"],
       technologies: [
         "Node.js",
         "Redux.js",

@@ -1,10 +1,10 @@
 ---
 title: "Hisabnikash — Multi-Store Inventory & Installment Accounting SaaS"
 slug: "hisabnikash"
-tagline: "Online inventory management software providing multi-store stock tracking, customer installment ledgers, automated SMS alerts, and double-entry accounting"
+tagline: "Online cloud inventory management software providing multi-store stock tracking, customer installment ledgers, automated SMS alerts, and double-entry accounting"
 company: "Shunno IT"
 kicker: "Enterprise Inventory SaaS & FinTech Ledger · Shunno IT"
-role: "Junior Software Engineer"
+role: "Lead Full-Stack Architect & Core Engineer"
 period: "Dec 2022 – Jun 2025"
 status: "Production"
 featured: false
@@ -33,14 +33,16 @@ tags:
   - "BullMQ"
   - "SMS Gateway"
   - "Docker"
-liveUrl: "https://hisabnikash.biz"
+liveUrl: "http://hisabnikashbd.com"
 ---
 
 ## 📌 Executive Summary
 
-**Hisabnikash** ([https://hisabnikash.biz](https://hisabnikash.biz) / [http://hisabnikashbd.com](http://hisabnikashbd.com)) is an enterprise-grade cloud inventory management and retail accounting SaaS platform engineered at **Shunno IT**. It powers retail businesses, electronic appliance showrooms, and multi-branch distributors across Bangladesh.
+**Hisabnikash** ([http://hisabnikashbd.com](http://hisabnikashbd.com) / [https://hisabnikash.biz](https://hisabnikash.biz)) is an enterprise-grade cloud inventory management and retail accounting SaaS platform engineered at **Shunno IT**.
 
-The platform provides end-to-end retail operations—including real-time multi-branch stock tracking, barcode/POS checkout, customer installment (**কিস্তি / EMI**) repayment schedules with automated SMS alerts, supplier purchase orders, and double-entry financial reporting.
+**Muhammad Sujon architected and engineered this platform end-to-end as the Lead Full-Stack Architect**, owning the entire system design: from the Nest.js modular domain services and PostgreSQL double-entry financial schema, to the real-time multi-branch inventory synchronization, customer installment (**কিস্তি / EMI**) calculation engine, automated telco SMS alerts, and high-speed React POS cashier interfaces.
+
+The software currently powers multiple high-volume commercial showrooms, electronics distributors, and retail chains across Bangladesh.
 
 ---
 
@@ -92,14 +94,14 @@ The platform provides end-to-end retail operations—including real-time multi-b
 ## ⚙️ Key Technical Challenges & Engineering Solutions
 
 ### 1. Preventing Concurrent Stock Overselling (POS Race Conditions)
-* **The Problem:** In high-volume retail stores, multiple cashiers sell limited inventory (e.g., clearance items or single-unit appliances) simultaneously. Standard uncoordinated `UPDATE stock = stock - qty` queries caused race conditions, leading to negative inventory and severe ledger mismatches.
+* **The Problem:** In multi-terminal retail stores, multiple cashiers sell limited inventory (e.g. clearance items or single-unit appliances) simultaneously. Standard uncoordinated `UPDATE stock = stock - qty` queries caused race conditions, leading to negative inventory and severe ledger mismatches.
 * **The Solution:**
   * Implemented **Pessimistic Row-Level Locking** using PostgreSQL `SELECT ... FOR UPDATE` wrapped within strict database transactions.
   * During POS barcode scan and checkout confirmation, the inventory record for that SKU and store branch is locked exclusively for milliseconds during stock validation and invoice creation.
   * Combined with **Redis atomic counters (`DECRBY`)** for pre-checkout validation, ensuring zero oversold items under concurrent checkouts with sub-150ms total response time.
 
 ### 2. Customer Installment (কিস্তি / EMI) Engine & Automated Debt Collection
-* **The Problem:** Many retail merchants in Bangladesh sell high-ticket goods (electronics, mobile phones, furniture) on monthly or weekly installment plans. Calculating dynamic aging receivables, handling irregular partial repayments, and tracking overdue penalties manually resulted in massive merchant revenue leakage.
+* **The Problem:** Many retail merchants sell high-ticket goods (electronics, mobile phones, furniture) on monthly or weekly installment plans. Calculating dynamic aging receivables, handling irregular partial repayments, and tracking overdue penalties manually resulted in massive merchant revenue leakage.
 * **The Solution:**
   * Engineered a deterministic **Amortization Ledger Engine** inside Nest.js.
   * When an installment sale is finalized, the system automatically builds an immutable schedule table tracking principal dues, interest components, and due dates.

@@ -33,6 +33,7 @@ tags:
   - "PostgreSQL"
   - "Redis"
 githubUrl: "https://github.com/yupsis/eazlock-monorepo"
+liveUrl: "https://eazlock.com"
 ---
 
 ## 📌 Executive Summary

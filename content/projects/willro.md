@@ -32,7 +32,7 @@ tags:
   - "Linux VPS"
   - "GitHub Actions"
 githubUrl: "https://github.com/willro/workspace"
-liveUrl: "https://sitgram.com"
+liveUrl: "https://willro.com"
 ---
 
 ## 📌 Executive Summary

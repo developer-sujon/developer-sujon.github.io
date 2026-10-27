@@ -33,7 +33,7 @@ tags:
   - "PostHog"
   - "Docker"
 githubUrl: "https://github.com/yupsisofficial/elizn"
-liveUrl: "https://sitgram.com"
+liveUrl: "https://elizn.com"
 ---
 
 ## 📌 Executive Summary
