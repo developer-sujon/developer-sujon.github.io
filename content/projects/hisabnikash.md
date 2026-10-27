@@ -36,118 +36,73 @@ tags:
 liveUrl: "http://hisabnikashbd.com"
 ---
 
-## 📌 Executive Summary
+## Overview
 
 **Hisabnikash** ([http://hisabnikashbd.com](http://hisabnikashbd.com) / [https://hisabnikash.biz](https://hisabnikash.biz)) is an enterprise-grade cloud inventory management and retail accounting SaaS platform engineered at **Shunno IT**.
 
-**Muhammad Sujon architected and engineered this platform end-to-end as the Lead Full-Stack Architect**, owning the entire system design: from the Nest.js modular domain services and PostgreSQL double-entry financial schema, to the real-time multi-branch inventory synchronization, customer installment (**কিস্তি / EMI**) calculation engine, automated telco SMS alerts, and high-speed React POS cashier interfaces.
+**Muhammad Sujon architected and engineered this platform end-to-end as the Lead Full-Stack Architect**, owning the entire system design: from the modular Nest.js backend architecture and PostgreSQL double-entry financial schema, to the real-time multi-branch inventory synchronization, customer installment (**কিস্তি / EMI**) calculation engine, automated telco SMS alerts, and high-speed React POS cashier interfaces.
 
-The software currently powers multiple high-volume commercial showrooms, electronics distributors, and retail chains across Bangladesh.
-
----
-
-## 🏗️ System Architecture & Data Flow
-
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                              HISABNIKASH SYSTEM ARCHITECTURE                           │
-│                                                                                        │
-│   [Cashier POS / Barcode Scanner]       [Store Admin / Web App]       [Customer]       │
-│                │                                   │                       ▲           │
-│                ▼                                   ▼                       │           │
-│   ┌────────────────────────────────────────────────────────┐               │           │
-│   │               Nginx Reverse Proxy & SSL                │               │           │
-│   └──────────────────────────┬─────────────────────────────┘               │           │
-│                              ▼                                             │           │
-│   ┌────────────────────────────────────────────────────────┐               │           │
-│   │              Nest.js Modular API Gateway               │               │           │
-│   │   • Auth & Tenant Isolation (JWT, Store Context)       │               │           │
-│   │   • Validation Pipes & DTO Transformation              │               │           │
-│   └──────┬───────────────────┬───────────────────┬─────────┘               │           │
-│          │                   │                   │                         │           │
-│          ▼                   ▼                   ▼                         │           │
-│   ┌───────────────┐   ┌───────────────┐   ┌───────────────┐                │           │
-│   │ POS & Sales   │   │ Inventory &   │   │ Installment & │                │           │
-│   │ Module        │   │ Warehouse     │   │ EMI Engine    │                │           │
-│   │ • Atomic Lock │   │ • Multi-Store │   │ • Schedules   │                │           │
-│   │ • POS Invoices│   │ • Transfer In │   │ • Dues Matrix │                │           │
-│   └──────┬────────┘   └──────┬────────┘   └──────┬────────┘                │           │
-│          │                   │                   │                         │           │
-│          ▼                   ▼                   ▼                         │           │
-│   ┌────────────────────────────────────────────────────────┐               │           │
-│   │       Double-Entry Financial Accounting Ledger         │               │           │
-│   │       (Debit/Credit: Cash, Accounts Receivable, Sales) │               │           │
-│   └──────────────────────────┬─────────────────────────────┘               │           │
-│                              │                                             │           │
-│              ┌───────────────┴───────────────┐                             │           │
-│              ▼                               ▼                             │           │
-│   ┌───────────────────────┐      ┌───────────────────────┐                 │           │
-│   │ PostgreSQL / MongoDB  │      │ Redis + BullMQ Queue  │                 │           │
-│   │ • ACID Transactions   │      │ • Midnight Due Cron   ├────► [SMS Gate]─┘           │
-│   │ • Row-level Locking   │      │ • Stock Counter Cache │      (On-Net SMS)           │
-│   └───────────────────────┘      └───────────────────────┘                             │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+The software powers multiple commercial showrooms, electronics distributors, and retail chains across Bangladesh.
 
 ---
 
-## ⚙️ Key Technical Challenges & Engineering Solutions
+## Architectural Principles & System Design
+
+The architecture was designed for high transaction volume, strict financial auditability, and zero inventory discrepancy:
+
+* **Modular Domain Architecture:** Built with Nest.js, decoupling the system into isolated domain modules (`InventoryModule`, `SalesModule`, `InstallmentModule`, `LedgerModule`, `NotificationModule`).
+* **Multi-Store Inventory Synchronization:** Central warehouse catalogs synchronize real-time stock balances across regional branch outlets, supporting barcode lookups, re-order threshold alarms, and inter-branch transfer slips.
+* **Double-Entry Financial Ledger:** Every business transaction—whether a cash sale, installment down-payment, supplier purchase order, or merchandise return—records balanced debit and credit entries in an immutable ledger.
+* **Asynchronous Alert Pipelines:** Scheduled background workers track aging receivables and trigger personalized SMS reminders through high-throughput telco gateways.
+
+---
+
+## Key Engineering Challenges & Solutions
 
 ### 1. Preventing Concurrent Stock Overselling (POS Race Conditions)
-* **The Problem:** In multi-terminal retail stores, multiple cashiers sell limited inventory (e.g. clearance items or single-unit appliances) simultaneously. Standard uncoordinated `UPDATE stock = stock - qty` queries caused race conditions, leading to negative inventory and severe ledger mismatches.
-* **The Solution:**
+* **Challenge:** In multi-terminal retail stores, multiple cashiers sell limited inventory (e.g. single-unit electronics or promotional items) simultaneously. Standard uncoordinated `UPDATE stock = stock - qty` queries caused race conditions, leading to negative inventory and accounting discrepancies.
+* **Solution:**
   * Implemented **Pessimistic Row-Level Locking** using PostgreSQL `SELECT ... FOR UPDATE` wrapped within strict database transactions.
-  * During POS barcode scan and checkout confirmation, the inventory record for that SKU and store branch is locked exclusively for milliseconds during stock validation and invoice creation.
-  * Combined with **Redis atomic counters (`DECRBY`)** for pre-checkout validation, ensuring zero oversold items under concurrent checkouts with sub-150ms total response time.
+  * During barcode scan and cashier checkout confirmation, the inventory record for that SKU and store branch is locked exclusively for milliseconds during stock validation and invoice generation.
+  * Paired with **Redis atomic counters (`DECRBY`)** for pre-checkout validation, ensuring zero oversold items under concurrent checkouts with sub-150ms total response time.
 
 ### 2. Customer Installment (কিস্তি / EMI) Engine & Automated Debt Collection
-* **The Problem:** Many retail merchants sell high-ticket goods (electronics, mobile phones, furniture) on monthly or weekly installment plans. Calculating dynamic aging receivables, handling irregular partial repayments, and tracking overdue penalties manually resulted in massive merchant revenue leakage.
-* **The Solution:**
+* **Challenge:** Retail merchants frequently sell high-ticket merchandise (smartphones, home appliances, motorbikes) on weekly or monthly installment plans. Calculating dynamic aging receivables, handling irregular partial repayments, and tracking overdue penalties manually resulted in severe revenue leakage.
+* **Solution:**
   * Engineered a deterministic **Amortization Ledger Engine** inside Nest.js.
   * When an installment sale is finalized, the system automatically builds an immutable schedule table tracking principal dues, interest components, and due dates.
-  * Supported **FIFO partial payment allocation**: if a customer pays BDT 3,500 against an overdue schedule of BDT 5,000, the system automatically allocates the funds to the oldest overdue invoice first and re-calculates subsequent penalty balances.
+  * Supported **FIFO partial payment allocation**: if a customer pays BDT 3,500 against an overdue schedule of BDT 5,000, the system automatically allocates the funds to the oldest overdue invoice first and re-calculates subsequent penalty balances in an atomic database transaction.
 
 ### 3. Asynchronous SMS Due-Alert Dispatcher via Redis & BullMQ
-* **The Problem:** Dispatching thousands of SMS payment reminders synchronously via telco HTTP APIs during store opening hours blocked backend threads and caused timeout failures.
-* **The Solution:**
-  * Implemented scheduled cron workers using `@nestjs/schedule` that execute daily at 00:00.
+* **Challenge:** Dispatching thousands of SMS payment reminders synchronously via telco HTTP APIs during store opening hours blocked backend threads and caused timeout failures.
+* **Solution:**
+  * Implemented scheduled cron workers using `@nestjs/schedule` executing daily at midnight.
   * Scans upcoming installments across three horizons: **Upcoming (T-3 Days)**, **Due Today (T-0)**, and **Overdue (T+1)**.
-  * Pushes individualized notification jobs to a **BullMQ Redis Queue** with rate-limiting, exponential backoff retries, and delivery tracking.
+  * Enqueues individualized notification jobs to a **BullMQ Redis Queue** with rate-limiting, exponential backoff retries, and delivery tracking.
   * Slashed customer payment default rates by over **35%** for participating merchants.
 
 ### 4. Multi-Store Warehouse Transfers & In-Transit Inventory
-* **The Problem:** Moving merchandise from a central warehouse in Dhaka to branch showrooms in Rajshahi or Khulna required tracking stock in transit without distorting store availability or financial valuation.
-* **The Solution:**
+* **Challenge:** Moving merchandise from a central warehouse in Dhaka to branch showrooms in Rajshahi or Khulna required tracking stock in transit without distorting store availability or financial valuation.
+* **Solution:**
   * Created a strict 3-state state machine: `TRANSFER_REQUESTED` -> `IN_TRANSIT` -> `RECEIVED_AND_VERIFIED`.
   * While `IN_TRANSIT`, stock is deducted from the source store and placed into a virtual *In-Transit Transit Ledger*, preventing either store from selling items until the receiving warehouse manager scans the physical barcodes.
 
-### 5. Double-Entry Accounting Ledger
-* **The Problem:** Simple income/expense trackers fail tax audits and cannot reliably represent accounts receivable or inventory depreciation.
-* **The Solution:**
-  * Implemented double-entry journal bookkeeping principles. Every sale creates equal debit and credit journal entries:
-    * *Debit:* Cash / Bank / Customer Receivables (Asset).
-    * *Credit:* Sales Revenue, Output Tax (Liability), and Cost of Goods Sold vs Inventory Asset.
-  * Enabled real-time balance sheet, trial balance, and profit/loss statement generation with zero reconciliation discrepancies.
-
 ---
 
-## 🛠️ Architecture Stack & Design Choices
+## Technology Stack
 
-| Layer | Technology | Engineering Rationale |
+| Layer | Technologies | Role & Architectural Purpose |
 | :--- | :--- | :--- |
-| **Backend Framework** | **Nest.js (Node.js & TypeScript)** | Modular domain architecture, clean dependency injection, built-in validation pipes, and enterprise maintainability. |
-| **Frontend SPA** | **React 18 & Vite** | High-speed POS interface, thermal receipt printing integration, and instant client-side barcode lookup. |
-| **Databases** | **PostgreSQL & MongoDB** | PostgreSQL for ACID financial transactions and relational inventory ledgers; MongoDB for flexible audit logs and activity history. |
-| **Cache & Task Queue** | **Redis & BullMQ** | Fast distributed locking, pre-checkout stock cache, and resilient background SMS queueing. |
-| **DevOps & Hosting** | **Docker & Linux VPS** | Containerized deployment with Nginx reverse proxy, SSL termination, and PM2 cluster process management. |
+| **Backend Core** | Nest.js, Node.js, TypeScript | Modular domain services, dependency injection, and business logic execution. |
+| **Frontend Web & POS** | React, Vite, Tailwind CSS | High-speed POS interface, thermal receipt printing, and barcode scanner input handling. |
+| **Databases** | PostgreSQL, MongoDB | Relational ACID transactions for inventory and ledgers; MongoDB for audit history and logs. |
+| **Cache & Task Queues** | Redis, BullMQ | Atomic stock validation locks, midnight due calculation crons, and SMS dispatch workers. |
+| **DevOps & Infrastructure** | Docker, Nginx, PM2, Linux VPS | Containerized deployment with SSL termination, process monitoring, and automated daily backups. |
 
 ---
 
-## 🎯 Interview Deep-Dive Talking Points
+## Measurable Production Impact
 
-1. **Why NestJS over plain Express for Hisabnikash?**
-   * *Answer:* For enterprise SaaS with complex business logic (installments, multi-store stock, tax, double-entry ledgers), Express leads to spaghetti controllers. NestJS provides strict module boundaries (`InventoryModule`, `InstallmentModule`, `AccountingModule`), clean dependency injection, and testable domain services.
-2. **How are POS race conditions handled when multiple terminals sell the last item?**
-   * *Answer:* By using PostgreSQL pessimistic row locking (`SELECT stock FROM store_inventory WHERE sku = :id AND store_id = :storeId FOR UPDATE`). This blocks competing transactions until the active sale commits, preventing double-sell phenomena completely.
-3. **How does the installment debt allocation work with partial payments?**
-   * *Answer:* An automated FIFO waterfall engine applies partial payments to the oldest open installment record first, updating remaining principal and adjusting overdue status in a single atomic database transaction.
+* **Zero Stock Overselling:** 100% inventory accuracy across multi-terminal checkout registers.
+* **35% Faster Debt Recovery:** Automated telco SMS reminders significantly decreased overdue installments.
+* **100% Audit Reconciliation:** Complete double-entry financial integrity matching daily physical cash drawers.

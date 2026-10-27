@@ -323,6 +323,17 @@ export const resumeData: ResumeData = {
         { name: "Print & Editorial Typography", highlight: true },
       ],
     },
+    {
+      title: "Automation & IoT Systems",
+      icon: "Cpu",
+      skills: [
+        { name: "n8n Workflow Automation", highlight: true },
+        { name: "IoT & Embedded Systems (Arduino)", highlight: true },
+        { name: "Sensor Interfacing (MQ-6, DHT11)", highlight: true },
+        { name: "MQTT & Serial Telemetry", highlight: true },
+        { name: "Hardware GPIO & Event Webhooks", highlight: true },
+      ],
+    },
   ],
   education: [
     {

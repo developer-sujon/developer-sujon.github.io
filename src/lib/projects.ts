@@ -47,6 +47,8 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
     "elizn",
     "eazlock",
     "netfee",
+    "zotlyx-inbox",
+    "iot-101",
     "support-ticket",
     "shunno-pay",
     "shunno-storage",

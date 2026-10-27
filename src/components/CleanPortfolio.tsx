@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export type SectionTab = "overview" | "systems" | "experience" | "contact";
-export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT";
+export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT" | "Open Source";
 
 interface CleanPortfolioProps {
   projects: {
@@ -246,13 +246,13 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   Selected Systems &amp; Case Studies
                 </h2>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  Production platforms across Sitgram, Yupsis, and Shunno IT. Click to inspect.
+                  Production platforms and open-source systems. Click to inspect.
                 </p>
               </div>
 
               {/* Company Filter Links */}
-              <div className="flex items-center gap-3 text-xs">
-                {(["all", "Sitgram", "Yupsis", "Shunno IT"] as CompanyFilter[]).map((c) => (
+              <div className="flex items-center gap-3 text-xs flex-wrap">
+                {(["all", "Sitgram", "Yupsis", "Shunno IT", "Open Source"] as CompanyFilter[]).map((c) => (
                   <button
                     key={c}
                     onClick={() => setCompanyFilter(c)}
@@ -578,7 +578,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   className="text-zinc-900 dark:text-zinc-100 hover:underline flex items-center gap-1"
                 >
                   <GithubIcon className="w-3.5 h-3.5" />
-                  <span>View Source Monorepo ↗</span>
+                  <span>View Source (GitHub) ↗</span>
                 </a>
               )}
               {selectedProject.metadata.liveUrl && (
@@ -586,9 +586,9 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   href={selectedProject.metadata.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-zinc-900 dark:text-zinc-100 hover:underline flex items-center gap-1"
+                  className="text-zinc-900 dark:text-zinc-100 hover:underline flex items-center gap-1.5"
                 >
-                  <span>Live Production ↗</span>
+                  <span>{selectedProject.metadata.company === "Open Source" ? "Live Demo / Deploy ↗" : "Live Production ↗"}</span>
                 </a>
               )}
             </div>
