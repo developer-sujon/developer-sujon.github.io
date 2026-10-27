@@ -122,11 +122,18 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
             
             {/* Avatar & Title */}
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800 shrink-0">
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Active online dot */}
+                <span
+                  className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-black pointer-events-none"
+                  title="Active now"
                 />
               </div>
 
@@ -246,224 +253,167 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         {/* TAB 1: OVERVIEW (Curated Executive Summary & Flagships)        */}
         {/* ============================================================== */}
         {activeTab === "overview" && (
-          <div className="space-y-12">
-            
-            {/* 1. ARCHITECTURAL STATEMENT & IMPACT METRICS */}
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Architectural Focus &amp; Core Specialty
-                </h2>
-                <p className="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal">
-                  Specializing in distributed systems, Turborepo monorepos, and sub-second edge AI pipelines. Proven engineering leadership directing teams, virtualizing million-cell spreadsheet engines, and architecting zero-downtime microservices across production platforms.
+          <div className="space-y-10">
+            {/* 1. About / Narrative */}
+            <section className="space-y-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                About
+              </h2>
+              <div className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
+                <p>
+                  I&apos;m a Lead Software Engineer and Systems Architect with 5+ years of experience building and scaling web platforms. Currently, I lead engineering at{" "}
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span>, where I direct team delivery, own Turborepo monorepo architecture, and build type-safe microservices with oRPC.
                 </p>
-              </div>
-
-              {/* Minimalist Key Impact Metrics Strip */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-zinc-200 dark:border-zinc-800">
-                {metrics.map((m, idx) => (
-                  <div key={idx} className="space-y-0.5">
-                    <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 font-mono">
-                      {m.value}
-                    </div>
-                    <div className="text-xs text-zinc-800 dark:text-zinc-200 font-medium">
-                      {m.label}
-                    </div>
-                    {m.sub && (
-                      <div className="text-[11px] text-zinc-400 dark:text-zinc-500 leading-tight">
-                        {m.sub}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                <p>
+                  Previously at <span className="text-zinc-900 dark:text-zinc-100 font-medium">Yupsis</span> and{" "}
+                  <span className="text-zinc-900 dark:text-zinc-100 font-medium">Shunno IT</span>, I built edge AI pipelines on Cloudflare Workers, real-time IoT event processors, and commercial ERP/inventory systems. I care deeply about clean system design, developer ergonomics, and high-reliability infrastructure.
+                </p>
               </div>
             </section>
 
-            {/* 2. SELECTED FLAGSHIP ARCHITECTURES */}
+            {/* 2. Selected Work / Case Studies */}
             <section className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                    Flagship Systems Architecture
-                  </h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                    Production platforms architected for high throughput, low latency, and scale.
-                  </p>
-                </div>
+              <div className="flex items-center justify-between pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Selected Work
+                </h2>
                 <button
                   onClick={() => navigateToTab("projects")}
                   className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <span>All ({projects.length})</span>
+                  <span>All Projects ({projects.length})</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
-              {/* Clean Row-based Flagship List */}
-              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <div className="space-y-3">
                 {featuredProjects.map(({ metadata }) => (
                   <div
                     key={metadata.slug}
                     onClick={() => setSelectedSlug(metadata.slug)}
-                    className="group py-4 px-2 -mx-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-start justify-between gap-3"
+                    className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/20 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start justify-between gap-3"
                   >
-                    <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                           {metadata.title.split("—")[0].trim()}
                         </span>
                         {metadata.company && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-medium">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
                             {metadata.company}
-                          </span>
-                        )}
-                        {metadata.kicker && (
-                          <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 hidden sm:inline">
-                            · {metadata.kicker}
                           </span>
                         )}
                       </div>
                       
-                      <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+                      <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         {metadata.tagline}
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">
-                        {metadata.tags.slice(0, 4).map((tag, i) => (
-                          <span key={tag}>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {metadata.tags.slice(0, 4).map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400"
+                          >
                             {tag}
-                            {i < Math.min(3, metadata.tags.length - 1) && (
-                              <span className="text-zinc-300 dark:text-zinc-700 ml-2">/</span>
-                            )}
                           </span>
                         ))}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 shrink-0 self-end sm:self-center font-medium transition-colors">
-                      <span>Inspect Case Study</span>
+                      <span>Case study</span>
                       <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Explore all catalog trigger */}
-              <div className="pt-2">
-                <button
-                  onClick={() => navigateToTab("projects")}
-                  className="w-full py-2.5 px-3 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all flex items-center justify-between group cursor-pointer"
-                >
-                  <span>Explore complete production catalog ({projects.length} systems)</span>
-                  <span className="flex items-center gap-1 font-medium group-hover:translate-x-0.5 transition-transform">
-                    View Catalog <ArrowRight className="w-3 h-3" />
-                  </span>
-                </button>
-              </div>
             </section>
 
-            {/* 3. TECHNICAL DOMAINS & ARCHITECTURAL STACK */}
-            <section className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                    Technical Stack &amp; Architectural Domains
-                  </h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                    Core systems architecture capabilities developed across production workloads.
-                  </p>
-                </div>
+            {/* 3. Career Timeline */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Experience
+                </h2>
                 <button
                   onClick={() => navigateToTab("experience")}
                   className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <span>Career History</span>
+                  <span>Full History</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 pt-1">
-                <div className="space-y-1.5">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                    Distributed Cloud &amp; Edge
+              <div className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
+                {experiences.map((exp, idx) => (
+                  <div key={idx} className="py-2.5 flex items-baseline justify-between gap-3 text-xs sm:text-sm">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="font-medium text-zinc-900 dark:text-zinc-100">{exp.company}</span>
+                      <span className="text-zinc-400 dark:text-zinc-500 font-mono">/</span>
+                      <span className="text-zinc-600 dark:text-zinc-400">{exp.role}</span>
+                    </div>
+                    <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
+                      {exp.period.split("·")[0].trim()}
+                    </span>
                   </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Cloudflare Workers, Durable Objects, Docker, Linux VPS, Nginx, Hyperdrive, Redis Caching
-                  </p>
-                </div>
+                ))}
+              </div>
+            </section>
 
-                <div className="space-y-1.5">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Backend Architecture &amp; Scale
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Turborepo Monorepo, oRPC Type Safety, NestJS, Node.js, RabbitMQ Message Queues, PostgreSQL
-                  </p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    Real-Time Systems &amp; AI
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    Vectorize RAG Pipelines, SocketIO, WebSockets, LLM Burst Debounce, Workers AI
-                  </p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                    Automation &amp; Hardware
-                  </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    n8n Workflow Automation, Webhooks, IoT &amp; Arduino, Sensor Telemetry, Serial Comms
-                  </p>
-                </div>
+            {/* 4. Technologies */}
+            <section className="space-y-3">
+              <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Technologies
+                </h2>
               </div>
 
-              {/* Current Engineering Directorship Summary */}
-              <div className="pt-2">
-                <div className="p-3.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">Current Role:</span> Directing engineering teams and monorepo architecture at <span className="text-zinc-900 dark:text-zinc-100 font-medium">Sitgram</span> (Dec 2024 – Present).
-                  </div>
-                  <button
-                    onClick={() => navigateToTab("experience")}
-                    className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer shrink-0"
-                  >
-                    <span>Full Experience</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Languages &amp; Frameworks</span>
+                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    TypeScript, JavaScript, Next.js, React, Node.js, NestJS, Express
+                  </span>
+                </div>
+                <div>
+                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Architecture &amp; Data</span>
+                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    Turborepo, oRPC, Microservices, RabbitMQ, Redis, PostgreSQL, MongoDB, Prisma
+                  </span>
+                </div>
+                <div>
+                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Cloud &amp; DevOps</span>
+                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    Cloudflare Workers, Durable Objects, Docker, Linux VPS, Nginx, AWS, GCP, GitHub Actions
+                  </span>
+                </div>
+                <div>
+                  <span className="font-mono text-zinc-400 dark:text-zinc-500 block mb-1">Real-Time &amp; Automation</span>
+                  <span className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    SocketIO, WebSockets, Vectorize RAG, n8n Automation, IoT &amp; Serial Telemetry
+                  </span>
                 </div>
               </div>
             </section>
 
-            {/* 4. EXECUTIVE ENGAGEMENT CALLOUT */}
-            <section className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-0.5">
-                <div className="text-xs font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                  Engagement &amp; Opportunities
-                </div>
-                <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                  Available for Senior Systems Roles, Architecture Consulting &amp; Advisory
-                </div>
-              </div>
-
+            {/* 5. Contact CTA */}
+            <section className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <p className="text-zinc-500 dark:text-zinc-400">
+                Open to senior engineering roles, architecture consulting, and advisory.
+              </p>
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => navigateToTab("contact")}
-                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
                 >
-                  Write Message
+                  Get in Touch
                 </button>
                 <a
                   href="https://wa.me/8801772703036"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors flex items-center gap-1.5"
                 >
                   <WhatsAppIcon className="w-3 h-3" />
                   <span>WhatsApp</span>
