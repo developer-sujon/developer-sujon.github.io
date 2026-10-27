@@ -16,10 +16,15 @@ import {
   Briefcase,
   Layers,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Cpu,
+  Server,
+  Database,
+  Cloud,
+  CheckCircle2
 } from "lucide-react";
 
-export type SectionTab = "overview" | "projects" | "experience" | "contact";
+export type SectionTab = "overview" | "projects" | "experience" | "capabilities" | "contact";
 export type CompanyFilter = "all" | "Sitgram" | "Yupsis" | "Shunno IT" | "Open Source";
 
 interface CleanPortfolioProps {
@@ -219,17 +224,18 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         </header>
 
         {/* 2. NAVIGATION TABS */}
-        <nav className="flex items-center gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-xs">
+        <nav className="flex items-center gap-5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-xs overflow-x-auto no-scrollbar">
           {[
             { id: "overview", label: "Overview" },
             { id: "projects", label: "Projects" },
             { id: "experience", label: "Experience" },
+            { id: "capabilities", label: "Capabilities" },
             { id: "contact", label: "Contact" },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as SectionTab)}
-              className={`pb-1 transition-colors cursor-pointer ${
+              className={`pb-1 transition-colors cursor-pointer shrink-0 ${
                 activeTab === tab.id
                   ? "text-zinc-900 dark:text-zinc-100 font-medium border-b-2 border-zinc-900 dark:border-zinc-100"
                   : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 border-b-2 border-transparent"
@@ -401,10 +407,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                   Core Engineering Domains
                 </h2>
                 <button
-                  onClick={() => navigateToTab("experience")}
+                  onClick={() => navigateToTab("capabilities")}
                   className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 cursor-pointer"
                 >
-                  <span>All Skills</span>
+                  <span>All Capabilities</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
@@ -577,18 +583,23 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 3: EXPERIENCE (Work History Timeline & Technical Skills)   */}
+        {/* TAB 3: EXPERIENCE (Work History Timeline & Education Only)     */}
         {/* ============================================================== */}
         {activeTab === "experience" && (
           <div className="space-y-12">
             {/* Work Experience Timeline */}
             <section className="space-y-6">
               <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Work Experience &amp; Leadership
-                </h2>
-                <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
-                  5+ Years Production
+                <div>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                    Work Experience &amp; Leadership
+                  </h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Engineering impact, team leadership, and systems shipped across 4 companies.
+                  </p>
+                </div>
+                <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono shrink-0">
+                  5+ Years
                 </span>
               </div>
 
@@ -695,27 +706,33 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               </div>
             </section>
 
-            {/* Technical Capabilities Matrix */}
-            <section className="space-y-4">
-              <div className="pb-1.5 border-b border-zinc-200 dark:border-zinc-800">
+            {/* Academic Credentials within Experience */}
+            <section className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="pb-1 border-b border-zinc-200 dark:border-zinc-800">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
-                  Technical Capabilities &amp; Architecture Tooling
+                  Academic Background
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {skillCategories.map((cat, i) => (
-                  <div key={i} className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1.5">
-                    <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
-                      {cat.title}
+              <div className="space-y-3">
+                {education.map((edu, idx) => (
+                  <div key={idx} className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <div className="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">
+                        {edu.degree}
+                      </div>
+                      <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
+                        {edu.period}
+                      </span>
                     </div>
-                    <div className="flex flex-wrap gap-1 text-[11px] text-zinc-600 dark:text-zinc-400 font-mono">
-                      {cat.skills.map((s, si) => (
-                        <span key={si} className="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
-                          {s.name}
-                        </span>
-                      ))}
+                    <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                      {edu.institution}
                     </div>
+                    {edu.details && (
+                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 pt-0.5">
+                        {edu.details}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -724,7 +741,118 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: CONTACT (Direct Message & Channels)                      */}
+        {/* TAB 4: CAPABILITIES (Dedicated Architecture & Tech Matrix)     */}
+        {/* ============================================================== */}
+        {activeTab === "capabilities" && (
+          <div className="space-y-8">
+            <div className="space-y-1 pb-1 border-b border-zinc-200 dark:border-zinc-800">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                Technical Capabilities &amp; Architecture Tooling
+              </h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Production-tested tooling, frameworks, distributed primitives, and engineering paradigms.
+              </p>
+            </div>
+
+            {/* 6 Skill Categories Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {skillCategories.map((cat, i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-2.5 flex flex-col justify-between"
+                >
+                  <div className="space-y-1">
+                    <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono flex items-center justify-between">
+                      <span>{cat.title}</span>
+                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-normal">
+                        {cat.skills.length} tools
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono">
+                      {cat.skills.map((s, si) => (
+                        <span
+                          key={si}
+                          className={`px-2 py-0.5 rounded transition-colors ${
+                            s.highlight
+                              ? "bg-zinc-200/80 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium border border-zinc-300/50 dark:border-zinc-700/50"
+                              : "bg-zinc-100 dark:bg-zinc-800/40 text-zinc-600 dark:text-zinc-400"
+                          }`}
+                        >
+                          {s.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Architecture Paradigms & Engineering Principles */}
+            <section className="space-y-3 pt-2">
+              <div className="pb-1 border-b border-zinc-200 dark:border-zinc-800">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Architecture Paradigms &amp; Engineering Standards
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                    Monorepo &amp; Type Safety
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Turborepo unified tooling, oRPC end-to-end type contracts across client and server boundaries, zero-downtime atomic releases.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                    Edge Compute &amp; Async Queues
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Cloudflare Workers &amp; Durable Objects state coordination, RabbitMQ microservices, Redis caching, and idempotency guarantees.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                    Million-Row Sheet Virtualization
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Off-thread Web Worker computation, ArrayBuffer zero-copy transfer, 60 FPS viewport virtualization for heavy data grids.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                  <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-mono">
+                    Automation &amp; Hardware Telemetry
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    n8n low-code webhook workflows, IoT Arduino microcontroller sensor ingestion, MQTT/serial streaming, and command queues.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Bottom Stack CTA */}
+            <section className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/20 flex items-center justify-between gap-3">
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                Want to evaluate technical alignment for your engineering stack or team?
+              </div>
+              <button
+                onClick={() => navigateToTab("contact")}
+                className="px-3 py-1.5 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shrink-0 cursor-pointer flex items-center gap-1"
+              >
+                <span>Get In Touch</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </section>
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 5: CONTACT (Direct Message & Channels)                      */}
         {/* ============================================================== */}
         {activeTab === "contact" && (
           <div className="space-y-8">
