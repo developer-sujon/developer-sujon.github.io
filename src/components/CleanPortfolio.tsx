@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
-import { GithubIcon, LinkedinIcon, WhatsAppIcon } from "./icons";
+import { GithubIcon, LinkedinIcon, WhatsAppIcon, VerifiedBadgeIcon } from "./icons";
 import { 
   Sun, 
   Moon, 
@@ -122,21 +122,37 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
             
             {/* Avatar & Title */}
             <div className="flex items-center gap-4">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800 shrink-0">
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Facebook Live / Online Active Badge */}
+                <span
+                  className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[var(--bg-primary)] ring-1 ring-emerald-500/30 flex items-center justify-center shadow-xs"
+                  title="Active now"
+                  aria-label="Active now"
+                >
+                  <span className="w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75 absolute" />
+                </span>
               </div>
 
               <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                    {profile.name}
-                  </h1>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                      {profile.name}
+                    </h1>
+                    <VerifiedBadgeIcon className="w-5 h-5" />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 font-mono">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                    </span>
                     Available
                   </span>
                 </div>

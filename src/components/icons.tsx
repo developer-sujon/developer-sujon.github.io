@@ -41,3 +41,26 @@ export function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) 
     </svg>
   );
 }
+
+export function VerifiedBadgeIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      role="img"
+      viewBox="0 0 24 24"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Verified"
+    >
+      <title>Verified</title>
+      <path
+        d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.97-.81-3.98s-2.59-1.27-3.98-.81C14.67 2.56 13.43 1.75 12 1.75s-2.67.81-3.27 2.12c-1.39-.46-2.97-.2-3.98.81s-1.27 2.59-.81 3.98C2.63 9.33 1.75 10.57 1.75 12s.88 2.67 2.19 3.34c-.46 1.39-.2 2.97.81 3.98s2.59 1.27 3.98.81c.6 1.31 1.84 2.12 3.27 2.12s2.67-.81 3.27-2.12c1.39.46 2.97.2 3.98-.81s1.27-2.59.81-3.98c1.31-.67 2.19-1.91 2.19-3.34z"
+        className="fill-[#1877F2] dark:fill-[#0084FF]"
+      />
+      <path
+        d="M10.2 16.2L6.8 12.8L8.2 11.4L10.2 13.4L15.8 7.8L17.2 9.2L10.2 16.2Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
