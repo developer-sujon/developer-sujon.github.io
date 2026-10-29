@@ -3,7 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
-import { GithubIcon, LinkedinIcon, WhatsAppIcon, VerifiedBadgeIcon, MediumIcon } from "./icons";
+import { 
+  GithubIcon, 
+  LinkedinIcon, 
+  WhatsAppIcon, 
+  VerifiedBadgeIcon, 
+  MediumIcon,
+  TwitterIcon,
+  FacebookIcon,
+  LeetCodeIcon,
+} from "./icons";
 import { 
   Sun, 
   Moon, 
@@ -242,6 +251,42 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
               <LinkedinIcon className="w-3.5 h-3.5" />
               <span>LinkedIn ↗</span>
             </a>
+
+            {profile.leetcode && (
+              <a
+                href={profile.leetcode}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
+              >
+                <LeetCodeIcon className="w-3.5 h-3.5" />
+                <span>LeetCode ↗</span>
+              </a>
+            )}
+
+            {profile.twitter && (
+              <a
+                href={profile.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
+              >
+                <TwitterIcon className="w-3.5 h-3.5" />
+                <span>X / Twitter ↗</span>
+              </a>
+            )}
+
+            {profile.facebook && (
+              <a
+                href={profile.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1 shrink-0"
+              >
+                <FacebookIcon className="w-3.5 h-3.5" />
+                <span>Facebook ↗</span>
+              </a>
+            )}
 
             <a
               href={profile.medium || "https://medium.com/@muhammad-sujon"}
@@ -827,10 +872,169 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: CONTACT (Direct Message)                                */}
+        {/* TAB 4: CONTACT (Direct Message & Verified Channels)            */}
         {/* ============================================================== */}
         {activeTab === "contact" && (
           <div className="space-y-8">
+            {/* Quick Connect Cards */}
+            <section className="space-y-3">
+              <div className="pb-1 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
+                  Verified Channels
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                >
+                  <Mail className="w-4 h-4 text-zinc-500 dark:text-zinc-400 mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                      Email
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      {profile.email}
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href="https://wa.me/8801772703036"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                >
+                  <WhatsAppIcon className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                      WhatsApp / Call
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      {profile.phone}
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                >
+                  <LinkedinIcon className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                      LinkedIn
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      in/developer-sujon
+                    </div>
+                  </div>
+                </a>
+
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                >
+                  <GithubIcon className="w-4 h-4 text-zinc-800 dark:text-zinc-200 mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                      GitHub
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      developer-sujon
+                    </div>
+                  </div>
+                </a>
+
+                {profile.leetcode && (
+                  <a
+                    href={profile.leetcode}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                  >
+                    <LeetCodeIcon className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                        LeetCode
+                        <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                        developer-sujon
+                      </div>
+                    </div>
+                  </a>
+                )}
+
+                {profile.twitter && (
+                  <a
+                    href={profile.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                  >
+                    <TwitterIcon className="w-4 h-4 text-zinc-700 dark:text-zinc-300 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                        X / Twitter
+                        <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                        @developer-sujon
+                      </div>
+                    </div>
+                  </a>
+                )}
+
+                {profile.facebook && (
+                  <a
+                    href={profile.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                  >
+                    <FacebookIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                        Facebook
+                        <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                        sujon.developer
+                      </div>
+                    </div>
+                  </a>
+                )}
+
+                <a
+                  href={profile.medium || "https://medium.com/@muhammad-sujon"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors group flex items-start gap-2.5"
+                >
+                  <MediumIcon className="w-4 h-4 text-zinc-700 dark:text-zinc-300 mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-1">
+                      Medium
+                      <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">
+                      @muhammad-sujon
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </section>
+
+            {/* Direct Message Form */}
             <section className="space-y-4 p-5 sm:p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
               <div className="space-y-1">
                 <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
@@ -881,24 +1085,38 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         <footer className="pt-8 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[11px]">
             <div>© 2026 {profile.name} · {profile.location}</div>
-            <div className="flex items-center gap-3">
-              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
                 GitHub
               </a>
-              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
                 LinkedIn
               </a>
-              <a href="https://wa.me/8801772703036" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+              {profile.leetcode && (
+                <a href={profile.leetcode} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                  LeetCode
+                </a>
+              )}
+              {profile.twitter && (
+                <a href={profile.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                  X / Twitter
+                </a>
+              )}
+              {profile.facebook && (
+                <a href={profile.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                  Facebook
+                </a>
+              )}
+              <a href="https://wa.me/8801772703036" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
                 WhatsApp
               </a>
-              <a href={`mailto:${profile.email}`} className="hover:text-zinc-900 dark:hover:text-zinc-100">
+              <a href={`mailto:${profile.email}`} className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
                 Email
               </a>
             </div>
           </div>
         </footer>
       </div>
-
 
     </div>
   );

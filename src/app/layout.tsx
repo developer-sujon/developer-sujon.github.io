@@ -13,16 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sujon.yupsis.workers.dev"),
+  metadataBase: new URL("https://developer-sujon.github.io"),
   title: {
-    default: "Muhammad Sujon · Software Engineer",
+    default: "Muhammad Sujon · Lead Software Engineer",
     template: "%s · Muhammad Sujon",
   },
   description:
-    "Software Engineer with 5+ years of experience building web platforms, Turborepo monorepos, Cloudflare edge microservices, and production SaaS systems.",
+    "Lead Software Engineer with 5+ years of experience building web platforms, Turborepo monorepos, Cloudflare edge microservices, and production SaaS systems.",
   keywords: [
     "Muhammad Sujon",
-    "Software Engineer",
+    "Lead Software Engineer",
     "Systems Architect",
     "Full Stack Developer",
     "NestJS",
@@ -36,9 +36,10 @@ export const metadata: Metadata = {
     "Node.js",
     "MikroTik RouterOS",
     "Software Engineer Bangladesh",
+    "Meherpur Software Engineer",
     "Rajshahi Software Engineer",
   ],
-  authors: [{ name: "Muhammad Sujon", url: "https://github.com/muhammadsujon" }],
+  authors: [{ name: "Muhammad Sujon", url: "https://github.com/developer-sujon" }],
   creator: "Muhammad Sujon",
   publisher: "Muhammad Sujon",
   formatDetection: {
@@ -47,13 +48,13 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: "https://sujon.yupsis.workers.dev",
+    canonical: "https://developer-sujon.github.io",
   },
   openGraph: {
-    title: "Muhammad Sujon · Software Engineer",
+    title: "Muhammad Sujon · Lead Software Engineer",
     description:
-      "Software Engineer building high-performance web platforms, edge microservices, and SaaS systems.",
-    url: "https://sujon.yupsis.workers.dev",
+      "Lead Software Engineer building high-performance web platforms, edge microservices, and SaaS systems.",
+    url: "https://developer-sujon.github.io",
     siteName: "Muhammad Sujon Portfolio",
     locale: "en_US",
     type: "website",
@@ -62,15 +63,16 @@ export const metadata: Metadata = {
         url: "/sujon-avatar.png",
         width: 460,
         height: 460,
-        alt: "Muhammad Sujon — Software Engineer",
+        alt: "Muhammad Sujon — Lead Software Engineer",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "Muhammad Sujon · Software Engineer",
+    title: "Muhammad Sujon · Lead Software Engineer",
     description:
-      "Software Engineer building high-performance web platforms, edge microservices, and SaaS systems.",
+      "Lead Software Engineer building high-performance web platforms, edge microservices, and SaaS systems.",
+    creator: "@developer-sujon",
     images: ["/sujon-avatar.png"],
   },
   icons: {
@@ -103,12 +105,15 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Muhammad Sujon",
-  jobTitle: "Software Engineer",
-  url: "https://sujon.yupsis.workers.dev",
-  image: "https://sujon.yupsis.workers.dev/sujon-avatar.png",
+  jobTitle: "Lead Software Engineer",
+  url: "https://developer-sujon.github.io",
+  image: "https://developer-sujon.github.io/sujon-avatar.png",
   sameAs: [
     "https://github.com/developer-sujon",
-    "https://www.linkedin.com/in/muhammadsujon",
+    "https://www.linkedin.com/in/developer-sujon",
+    "https://twitter.com/developer-sujon",
+    "https://www.facebook.com/sujon.developer",
+    "https://leetcode.com/developer-sujon",
     "https://medium.com/@muhammad-sujon",
   ],
   worksFor: {
@@ -135,7 +140,7 @@ const jsonLd = {
     "Double-Entry Accounting",
   ],
   description:
-    "Software Engineer with 5+ years of experience building web platforms, type-safe APIs, and cloud infrastructure.",
+    "Lead Software Engineer with 5+ years of experience building web platforms, type-safe APIs, and cloud infrastructure.",
 };
 
 export default function RootLayout({

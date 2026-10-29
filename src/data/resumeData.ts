@@ -67,6 +67,9 @@ export interface ResumeData {
     github: string;
     githubUsername: string;
     linkedin: string;
+    facebook?: string;
+    twitter?: string;
+    leetcode?: string;
     medium: string;
     website: string;
     avatarUrl: string;
@@ -93,24 +96,27 @@ export const resumeData: ResumeData = {
   profile: {
     name: "Muhammad Sujon",
     englishName: "Muhammad Sujon",
-    title: "Software Engineer",
+    title: "Lead Software Engineer",
     journalVolume: "Software Engineering & Web Architecture",
     editorialSubtitle: "Building multi-tenant monorepos, clean APIs, and reliable web platforms.",
-    shortBio: "Software Engineer with 5+ years of experience building web platforms, type-safe APIs, and cloud infrastructure across Sitgram, Yupsis, and Shunno IT.",
-    location: "Rajshahi, Bangladesh",
+    shortBio: "Lead Software Engineer with 5+ years of experience architecting multi-tenant monorepos, edge microservices, real-time networking platforms, and production SaaS systems across Sitgram, Yupsis, and Shunno IT.",
+    location: "Meherpur / Rajshahi, Bangladesh",
     phone: "+8801772703036",
     email: "muhammad.sujon.cse@gmail.com",
     github: "https://github.com/developer-sujon",
     githubUsername: "developer-sujon",
-    linkedin: "https://www.linkedin.com/in/muhammadsujon",
+    linkedin: "https://www.linkedin.com/in/developer-sujon",
+    facebook: "https://www.facebook.com/sujon.developer",
+    twitter: "https://twitter.com/developer-sujon",
+    leetcode: "https://leetcode.com/developer-sujon",
     medium: "https://medium.com/@muhammad-sujon",
-    website: "https://devsujon.com",
+    website: "https://developer-sujon.github.io",
     avatarUrl: "/sujon-avatar.png",
     status: "Available for Engineering Roles & Projects",
     statusTicker: [
-      "Open to senior engineering roles",
-      "Turborepo monorepos & oRPC",
-      "High-scale web platforms",
+      "Lead Software Engineer · 5+ Years Exp",
+      "Turborepo Monorepos & Cloudflare Edge",
+      "High-throughput SaaS & MikroTik Networking",
       "Replies within 24 hours",
     ],
     yearsOfExperience: "5+ Years",
