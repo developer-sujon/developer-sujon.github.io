@@ -10,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://sujon.yupsis.workers.dev/sitemap.xml",
+    sitemap: "https://developer-sujon.github.io/sitemap.xml",
   };
 }

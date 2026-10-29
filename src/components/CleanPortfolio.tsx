@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { ProjectMetadata, resumeData } from "@/data/resumeData";
 import { GithubIcon, LinkedinIcon, WhatsAppIcon, VerifiedBadgeIcon, MediumIcon } from "./icons";
 import { 
@@ -38,7 +39,6 @@ interface CleanPortfolioProps {
 
 export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   const [isDark, setIsDark] = useState(false);
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<SectionTab>("overview");
   const [companyFilter, setCompanyFilter] = useState<CompanyFilter>("all");
   const [emailCopied, setEmailCopied] = useState(false);
@@ -46,7 +46,6 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   const [letterEmail, setLetterEmail] = useState("");
   const [letterMsg, setLetterMsg] = useState("");
   const [letterSent, setLetterSent] = useState(false);
-  const readerRef = useRef<HTMLDivElement>(null);
 
   const { profile, experiences, metrics, skillCategories, education, articles } = resumeData;
 
@@ -73,24 +72,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
     return () => mediaQuery.removeEventListener("change", handleSystemChange);
   }, []);
 
-  useEffect(() => {
-    if (selectedSlug) {
-      document.body.style.overflow = "hidden";
-      if (readerRef.current) {
-        readerRef.current.scrollTop = 0;
-      }
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setSelectedSlug(null);
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "unset";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [selectedSlug]);
+
 
   const toggleTheme = () => {
     const nextDark = !isDark;
@@ -144,10 +126,6 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
   const featuredProjects = projects.filter((p) =>
     ["willro", "zotlyx", "elizn", "torongo", "hisabnikash"].includes(p.metadata.slug)
   );
-
-  const selectedProject = selectedSlug
-    ? projects.find((p) => p.metadata.slug === selectedSlug)
-    : null;
 
   const navigateToTab = (tab: SectionTab) => {
     setActiveTab(tab);
@@ -339,10 +317,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
 
               <div className="space-y-3">
                 {featuredProjects.map(({ metadata }) => (
-                  <div
+                  <Link
                     key={metadata.slug}
-                    onClick={() => setSelectedSlug(metadata.slug)}
-                    className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/20 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start justify-between gap-3"
+                    href={`/projects/${metadata.slug}`}
+                    className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/20 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start justify-between gap-3 block"
                   >
                     <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -376,7 +354,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                       <span>Case study</span>
                       <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </section>
@@ -558,10 +536,10 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
             {/* Filtered Project Cards List */}
             <div className="space-y-3">
               {filteredProjects.map(({ metadata }) => (
-                <div
+                <Link
                   key={metadata.slug}
-                  onClick={() => setSelectedSlug(metadata.slug)}
-                  className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  href={`/projects/${metadata.slug}`}
+                  className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 block"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -597,7 +575,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                     <span>Inspect</span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
@@ -766,14 +744,14 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
                               return pTitle.includes(cleanName) || pSlug === cleanName || pSlug.includes(cleanName);
                             });
                             return matchingProject ? (
-                              <button
+                              <Link
                                 key={projName}
-                                onClick={() => setSelectedSlug(matchingProject.metadata.slug)}
+                                href={`/projects/${matchingProject.metadata.slug}`}
                                 className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer inline-flex items-center gap-1"
                               >
                                 <span>{projName}</span>
                                 <ArrowUpRight className="w-2.5 h-2.5" />
-                              </button>
+                              </Link>
                             ) : (
                               <span
                                 key={projName}
@@ -921,176 +899,7 @@ export function CleanPortfolio({ projects }: CleanPortfolioProps) {
         </footer>
       </div>
 
-      {/* 9. FULL-WIDTH CASE STUDY READER VIEW */}
-      {selectedProject && (
-        <div 
-          ref={readerRef}
-          className="fixed inset-0 z-50 overflow-y-auto bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased no-print animate-in fade-in duration-150"
-        >
-          
-          {/* Sticky Top Bar */}
-          <div className="sticky top-0 z-30 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-zinc-200 dark:border-zinc-800 transition-colors">
-            <div className="max-w-4xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
-              
-              {/* Back button */}
-              <button
-                onClick={() => setSelectedSlug(null)}
-                className="flex items-center gap-2 text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer group"
-              >
-                <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-                <span>Back to Portfolio</span>
-              </button>
 
-              {/* Title indicator */}
-              <div className="hidden md:flex items-center gap-2 text-xs font-mono text-zinc-400 dark:text-zinc-500 truncate max-w-xs">
-                <span>{selectedProject.metadata.company}</span>
-                <span>/</span>
-                <span className="text-zinc-800 dark:text-zinc-200 truncate font-medium">
-                  {selectedProject.metadata.title.split("—")[0].trim()}
-                </span>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                {selectedProject.metadata.githubUrl && (
-                  <a
-                    href={selectedProject.metadata.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                    title="View Source on GitHub"
-                  >
-                    <GithubIcon className="w-3.5 h-3.5" />
-                  </a>
-                )}
-
-                {selectedProject.metadata.liveUrl && (
-                  <a
-                    href={selectedProject.metadata.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
-                  >
-                    <span>{selectedProject.metadata.company === "Open Source" ? "Live Demo" : "Live Production"}</span>
-                    <ArrowUpRight className="w-3 h-3" />
-                  </a>
-                )}
-
-                <button
-                  onClick={toggleTheme}
-                  aria-label="Toggle theme"
-                  className="w-8 h-8 rounded-md border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-                >
-                  {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                </button>
-
-                <button
-                  onClick={() => setSelectedSlug(null)}
-                  className="p-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-                  title="Close (Esc)"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Centered Case Study Article Column */}
-          <main className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14 space-y-10">
-            
-            {/* Case Study Header */}
-            <div className="space-y-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-2 flex-wrap text-xs font-mono">
-                {selectedProject.metadata.company && (
-                  <span className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-medium text-zinc-700 dark:text-zinc-300">
-                    {selectedProject.metadata.company}
-                  </span>
-                )}
-                <span className="text-zinc-400 dark:text-zinc-500">
-                  {selectedProject.metadata.period}
-                </span>
-                {selectedProject.metadata.status && (
-                  <>
-                    <span className="text-zinc-300 dark:text-zinc-700">·</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                      {selectedProject.metadata.status}
-                    </span>
-                  </>
-                )}
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 leading-tight">
-                {selectedProject.metadata.title}
-              </h1>
-
-              <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
-                {selectedProject.metadata.tagline}
-              </p>
-
-              {/* Technologies */}
-              {selectedProject.metadata.tags && selectedProject.metadata.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pt-2">
-                  {selectedProject.metadata.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs font-mono px-2.5 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Impact Metrics (if present) */}
-            {selectedProject.metadata.metrics && selectedProject.metadata.metrics.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800">
-                {selectedProject.metadata.metrics.map((m, i) => (
-                  <div key={i} className="space-y-0.5">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                      {m.label}
-                    </div>
-                    <div className="text-xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
-                      {m.value}
-                    </div>
-                    {m.sub && (
-                      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-tight">
-                        {m.sub}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Markdown Case Study Body */}
-            <article
-              className="markdown-body"
-              dangerouslySetInnerHTML={{ __html: selectedProject.htmlContent }}
-            />
-
-            {/* Bottom Footer Navigation */}
-            <div className="pt-10 pb-16 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-4">
-              <button
-                onClick={() => setSelectedSlug(null)}
-                className="inline-flex items-center gap-2 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Return to Portfolio</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  readerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="text-xs font-mono text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-              >
-                ↑ Back to top
-              </button>
-            </div>
-          </main>
-        </div>
-      )}
     </div>
   );
 }
